@@ -1,1 +1,1 @@
-# praktikum
+# Yandex Praktikum Messeneger Project
