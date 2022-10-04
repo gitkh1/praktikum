@@ -1,6 +1,24 @@
-// src/index.js
+import Templator from "./utils/templator";
 
-import { sum } from './modules/sum';
+const str = `<div class="{{ className }}">
+<span onClick="{{ handleClick }}">{{text}}</span>
+<span>{{ user.info.firstName }}</span>
+</div>
+`;
+
+const str2 = `<div class="">
+<span onClick=""></span>
+<span></span>
+</div>
+`;
 
 const root = document.querySelector('#root');
-root.textContent = sum(6, -1).toString();
+let newFragment = new Templator(str);
+root.append(newFragment.compile({
+  className: 'myClass',
+  user: {
+    info: {
+      firstName: 'Василий'
+    }
+  }
+}));
