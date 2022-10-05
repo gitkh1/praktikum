@@ -2,23 +2,28 @@ import Templator from "./utils/templator";
 
 const str = `<div class="{{ className }}">
 <span onClick="{{ handleClick }}">{{text}}</span>
-<span>{{ user.info.firstName }}</span>
+{{%each users}}
+<span>{{ name }}</span>
+{{/%each}}
 </div>
 `;
 
 const str2 = `<div class="">
-<span onClick=""></span>
-<span></span>
+{{%each users}}
+<span>{{ name }}</span>
+{{/%each}}
 </div>
 `;
 
 const root = document.querySelector('#root');
 let newFragment = new Templator(str);
 root.append(newFragment.compile({
+  text: 'Привет',
   className: 'myClass',
   user: {
     info: {
       firstName: 'Василий'
     }
-  }
+  },
+  users: [{ name: 'Василий' }, { name: 'Николай' }, {name: 'Петр'}],
 }));
