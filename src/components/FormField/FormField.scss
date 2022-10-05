@@ -1,0 +1,14 @@
+@import "../../layouts/Consts.scss";
+
+.field {
+  
+  &__description {
+    margin-bottom: 3px;
+  }
+
+  &__input {
+    padding-bottom: 3px;
+    border-bottom: 1px solid #999;
+    color: $light-grey;
+  }
+}

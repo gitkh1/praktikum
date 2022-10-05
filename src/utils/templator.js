@@ -1,15 +1,20 @@
 // Simple template engine ((template, context) => DOM element)
 // Loop support {{%each}} -- {{/%each}}
 // Does not support loops within loops.
-
+import isEmpty from "./isEmpty";
 export default class Templator {
   elementRegExp = /(<[^<\n]*>)|({{.*}})/gi;
   openElementRegExp = /(<[^\/<\n]*>)/gi;
   closeElementRegExp = /<\/[\w]*>/gi;
-  tagNameRegExp = /(<[^\/][a-z]*)/gi;
-  classNamesRegExp = /class="{{(?:.*)}}"/gi;
+  tagNameRegExp = /(<[^\/][0-9a-z]*)/gi;
+  classNamesRegExp = /class="([^=<>\n]*)"/gm;
+  typeNameRegExp = /type="([^=<>\n]*)"/gm;
+  nameNameRegExp = /name="([^=<>\n]*)"/gm;
   loopOpenRegExp = /({{%each.*}})/gi;
   loopCloseRegExp = /({{\/%each}})/gi;
+  inputRegExp = /(<input[^<\n]*>)/gm;
+  imgRegExp = /(<img[^<\n]*>)/gm;
+  buttonRegExp = /(<button[^<\n]*>)/gm;
 
   constructor(template) {
     this._template = template;
@@ -21,15 +26,19 @@ export default class Templator {
     for (const key of keys) {
       const value = result[key];
       if (!value) {
-        return defaultValue;
+        return path;
       }
       result = value;
     }
-    return result ?? defaultValue;
+    return result ?? path;
   }
 
   getTagType(description) {
-    if (description.match(this.openElementRegExp)) {
+    if (description.match(this.imgRegExp)) {
+      return 'element img';
+    } else if (description.match(this.inputRegExp)) {
+      return 'element input';
+    } else if (description.match(this.openElementRegExp)) {
       return 'element open';
     } else if (description.match(this.closeElementRegExp)) {
       return 'element close';
@@ -43,13 +52,24 @@ export default class Templator {
   }
 
   createElement(description, ctx) {
+    if (!description.match(this.tagNameRegExp)) return;
+    
     const tagName = description.match(this.tagNameRegExp)[0].slice(1).toLowerCase();
-    let classNames = [];
-    if (description.match(this.classNamesRegExp)) {
-      classNames = description.match(this.classNamesRegExp)[0].slice(9, -3).trim().split(' ');
-    };
     const newElement = document.createElement(tagName);
-    classNames.forEach(className => newElement.classList.add(this.get(ctx, className)));
+    if (description.match(this.classNamesRegExp)) {
+      const classNames = description.match(this.classNamesRegExp)[0].slice(7, -1).trim().split(' ');
+      if (!isEmpty(classNames)) {
+        classNames.forEach(className => newElement.classList.add(className));
+      }
+    };
+    if (description.match(this.typeNameRegExp)) {
+      const typeName = description.match(this.typeNameRegExp)[0].slice(6, -1).trim();
+      newElement.type = typeName;
+    }
+    if (description.match(this.nameNameRegExp)) {
+      const nameName = description.match(this.nameNameRegExp)[0].slice(6, -1).trim();
+      newElement.name = nameName;
+    }
     return newElement;
   }
 
@@ -83,16 +103,32 @@ export default class Templator {
   }
 
   routeElement(match, ctx, cursorElement) {
-    if (this.getTagType(match) === 'element open') {
-      const newElement = this.createElement(match, ctx);
-      cursorElement.append(newElement);
-      cursorElement = newElement;
-    } else if (this.getTagType(match) === 'element text') {
-      const newElement = this.createTextElement(match, ctx);
-      cursorElement.textContent = newElement;
-    } else if (this.getTagType(match) === 'element close') {
-      cursorElement = cursorElement.parentNode;
-    };
+    const tagType = this.getTagType(match);
+    let newElement;
+    switch (tagType) {
+      case 'element img':
+        newElement = this.createElement(match, ctx);
+        cursorElement.append(newElement);
+        break;
+      case 'element input':
+        newElement = this.createElement(match, ctx);
+        cursorElement.append(newElement);
+        break;
+      case 'element open':
+        newElement = this.createElement(match, ctx);
+        cursorElement.append(newElement);
+        cursorElement = newElement;
+        break;
+      case 'element text':
+        newElement = this.createTextElement(match, ctx);
+        cursorElement.textContent = newElement;
+        break;
+      case 'element close':
+        cursorElement = cursorElement.parentNode;
+        break;
+      default:
+        break;
+    }
     return cursorElement;
   }
 
@@ -111,7 +147,7 @@ export default class Templator {
         currentElement = this.routeElement(match, ctx, currentElement);
       } else if (this.getTagType(match).includes('loop open')) {
         [currentElement, i] = this.createloopElement(match, matches, i, ctx, currentElement);
-      }
+      };
       i++;
     }
     return fragment;

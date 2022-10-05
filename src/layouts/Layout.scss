@@ -1,0 +1,20 @@
+@import "./normalize.scss";
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&display=swap');
+@import "./Consts.scss";
+
+* {
+  box-sizing: border-box;
+  border: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  background-color: $background-dark;
+  color: $grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: $baseFontSize;
+  font-family: 'Alegreya Sans', sans-serif;
+}

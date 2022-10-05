@@ -1,0 +1,22 @@
+@import "../../layouts/Consts.scss";
+
+.link {
+  cursor: pointer;
+  color: $blue;
+}
+
+.btn {
+  cursor: pointer;
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: $blue;
+  transition: all 0.3s;
+  color: #fff;
+  text-align: center;
+
+  &:hover {
+    background-color: $blue-dark;
+    transition: all $time;
+  }
+}

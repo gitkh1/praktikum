@@ -1,29 +1,9 @@
 import Templator from "./utils/templator";
-
-const str = `<div class="{{ className }}">
-<span onClick="{{ handleClick }}">{{text}}</span>
-{{%each users}}
-<span>{{ name }}</span>
-{{/%each}}
-</div>
-`;
-
-const str2 = `<div class="">
-{{%each users}}
-<span>{{ name }}</span>
-{{/%each}}
-</div>
-`;
+import Auth from "./pages/auth";
+import ErrNotFound from "./pages/ErrNotFound";
+import Style from "./layouts/Layout.scss";
+import UserProfile from "./pages/UserProfile";
 
 const root = document.querySelector('#root');
-let newFragment = new Templator(str);
-root.append(newFragment.compile({
-  text: 'Привет',
-  className: 'myClass',
-  user: {
-    info: {
-      firstName: 'Василий'
-    }
-  },
-  users: [{ name: 'Василий' }, { name: 'Николай' }, {name: 'Петр'}],
-}));
+let newFragment = new Templator(Auth());
+root.append(newFragment.compile({}));

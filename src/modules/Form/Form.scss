@@ -1,0 +1,39 @@
+@import "../../layouts/Consts.scss";
+
+.form {
+  padding: 30px;
+  background-color: $background-light;
+  border-radius: 12px;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+
+  &__title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: $light-grey;
+  }
+
+  &__field {
+    margin-bottom: 15px;
+  }
+
+  &__actions {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  &__btn {
+    margin-bottom: 16px;
+  }
+
+  &__link {
+    align-self: center;
+  }
+}
