@@ -1,4 +1,6 @@
 import inputStyle from "./Input.scss";
 
-export default Input = (classes, type, name, placeholder) =>
+const Input = (classes, type, name, placeholder) =>
   `<input class="${classes.join(' ')}" type="${type}" name="${name}" placeholder="${placeholder}">`;
+
+export default Input;

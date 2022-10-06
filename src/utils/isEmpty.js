@@ -9,7 +9,8 @@
  * @param {any} value - item to test
  * @returns {boolean} true if empty, otherwise false
  */
-export default function isEmpty(value) {
+
+function isEmpty(value) {
   return (
     value === 0 ||
     value === null || // check for null
@@ -19,3 +20,5 @@ export default function isEmpty(value) {
     (typeof value === 'object' && Object.keys(value).length === 0) // check for empty object
   );
 }
+
+export default isEmpty;

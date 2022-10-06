@@ -1,3 +1,5 @@
-import {formAuth} from "../modules/Form/Form";
+import { formAuth } from "../modules/Form/Form";
 
-export default Auth = () => formAuth();
+const Auth = () => formAuth();
+
+export default Auth;

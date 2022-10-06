@@ -1,3 +1,5 @@
-import {formSign} from "../modules/Form/Form";
+import { formSign } from "../modules/Form/Form";
 
-export default Sign = () => formSign();
+const Sign = () => formSign();
+
+export default Sign;

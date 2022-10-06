@@ -1,6 +1,8 @@
 import AvatarStyle from "./Avatar.scss";
 
-export default Avatar = (classesLabel, src) =>
+const Avatar = (classesLabel, src) =>
   `<div class="${classesLabel.join(' ')}">
     <img src="${src}">
   </div>`;
+
+export default Avatar;

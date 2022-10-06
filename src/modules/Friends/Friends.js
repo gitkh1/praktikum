@@ -3,7 +3,7 @@ import Input from "../../components/Input/Input";
 import Link from "../../components/Link/Link";
 import FriedsListStyle from "./Friends.scss";
 
-export default Friends = () =>
+const Friends = () =>
 
   `<div class="friends">
     <nav class="friends__menu">
@@ -11,7 +11,7 @@ export default Friends = () =>
         ${Link('{{Профиль}}', '#', ['link', 'link--grey'])}
       </div>
       <div class="friends__search">
-        ${Input(['colored-input', 'colored-input--search'],'text','search','Поиск')}
+        ${Input(['colored-input', 'colored-input--search'], 'text', 'search', 'Поиск')}
       </div>
     </nav>
     <ul class="friends__list">
@@ -21,3 +21,5 @@ export default Friends = () =>
       ${Friend('friend')}
     </ul>
   </div>`;
+
+export default Friends;

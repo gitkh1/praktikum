@@ -1,8 +1,8 @@
 import FriendStyle from "./Friend.scss";
 
-export default Friend = (className) =>
+const Friend = (className) =>
 
-`<li class="friend ${className}">
+  `<li class="friend ${className}">
     <div class="friend__photo">
       <img alt="" class="friend__img avatar">
     </div>
@@ -15,3 +15,5 @@ export default Friend = (className) =>
       <div class="friend__unread">{{4}}</div>
     </div>
   </li>`;
+
+export default Friend;

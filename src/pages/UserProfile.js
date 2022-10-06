@@ -1,3 +1,5 @@
-import {formUserProfile} from "../modules/Form/Form";
+import { formUserProfile } from "../modules/Form/Form";
 
-export default UserProfile = () => formUserProfile();
+const UserProfile = () => formUserProfile();
+
+export default UserProfile;

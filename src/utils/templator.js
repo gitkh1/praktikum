@@ -2,7 +2,7 @@
 // Loop support {{%each}} -- {{/%each}}
 // Does not support loops within loops.
 import isEmpty from "./isEmpty";
-export default class Templator {
+class Templator {
   elementRegExp = /(<[^<\n]*>)|({{.*}})/gi;
   openElementRegExp = /(<[^\/][^><\n]*>)/gm;
   closeElementRegExp = /<\/[\w]*>/gi;
@@ -189,3 +189,5 @@ export default class Templator {
   }
 
 }
+
+export default Templator;

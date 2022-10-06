@@ -2,7 +2,7 @@ import Message from "../../components/Message/Message";
 import NewMessage from "../../components/NewMessage/NewMessage";
 import ChatStyle from "./Chat.scss";
 
-export default Chat = () =>
+const Chat = () =>
 
   `<div class="chat">
     <div class="chat__menu">
@@ -23,3 +23,5 @@ export default Chat = () =>
       ${NewMessage()}
     </div>
   </div>`;
+
+export default Chat;

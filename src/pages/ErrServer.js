@@ -1,3 +1,5 @@
 import Err from "../modules/Err/Err";
 
-export default ErrServer = () => Err('500', 'Мы уже фиксим');
+const ErrServer = () => Err('500', 'Мы уже фиксим');
+
+export default ErrServer;
