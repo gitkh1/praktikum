@@ -1,5 +1,5 @@
 import Templator from "./utils/templator";
-import Auth from "./pages/auth";
+import Auth from "./pages/Auth";
 import ErrNotFound from "./pages/ErrNotFound";
 import Style from "./layouts/Layout.scss";
 import UserProfile from "./pages/UserProfile";

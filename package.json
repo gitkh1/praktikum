@@ -2,7 +2,7 @@
   "name": "messeneger",
   "version": "1.0.0",
   "description": "Веб-приложение Чат",
-  "main": "index.js",
+  "default": "index.js",
   "engines": {
     "node": ">=16.15.1",
     "npm": "~8.11.0"
