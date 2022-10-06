@@ -5,3 +5,27 @@ input {
   outline: none;
   background: none;
 }
+
+.colored-input {
+  background: $background-light;
+  padding: 8px 10px 8px 55px;
+  border-radius: 30px;
+  color: $light-grey;
+
+  &--search {
+    background: url(./search.svg) no-repeat 17px center;
+  }
+}
+
+.label {
+  display: block;
+
+  &__input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}

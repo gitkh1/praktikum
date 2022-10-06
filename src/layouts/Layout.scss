@@ -7,6 +7,15 @@
   border: none;
 }
 
+ul,li {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
 #root {
   width: 100vw;
   height: 100vh;
@@ -14,7 +23,10 @@
   color: $grey;
   display: flex;
   justify-content: center;
-  align-items: center;
   font-size: $baseFontSize;
   font-family: 'Alegreya Sans', sans-serif;
+}
+
+.label {
+  cursor: pointer;
 }

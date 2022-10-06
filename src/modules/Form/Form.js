@@ -1,66 +1,72 @@
+import Avatar from "../../components/Avatar/Avatar";
 import Button from "../../components/Button/Button";
-import FormField from "../../components/FormField/FormField";
-import AvatarInput from "../../components/input/AvatarInput";
-import Input from "../../components/Input/Input";
+import { ShortField, LongField, LinkField } from "../../components/FormField/FormField";
+import LabledInput from "../../components/Input/LabledInput";
 import Link from "../../components/Link/Link";
 import Title from "../../components/Title/Title";
 import FormStyle from "./Form.scss";
 
 const formSign = () =>
-  `<form class="form">
+  `<form class="form form--sign">
     ${Title(['form__title'], 'Регистрация')}
-    ${FormField('{{Почта}}', 'email', 'email')}
-    ${FormField('{{Логин}}', 'login', 'text')}
-    ${FormField('{{Имя}}', 'first_name', 'text')}
-    ${FormField('{{Фамилия}}', 'second_name', 'text')}
-    ${FormField('{{Телефон}}', 'phone', 'phone')}
-    ${FormField('{{Пароль}}', 'password', 'password')}
-    ${FormField('{{Пароль (еще раз)}}', 'password', 'password')}
-    <div class="form__actions">
-      ${Button('{{Зарегистрироваться}}', ['btn', 'form__btn'])}
-      ${Link('{{Войти}}', '{{#}}', ['link', 'form__link'])}
-    </div>
+    ${ShortField('{{Почта}}', 'email', 'email')}
+    ${ShortField('{{Логин}}', 'login', 'text')}
+    ${ShortField('{{Имя}}', 'first_name', 'text')}
+    ${ShortField('{{Фамилия}}', 'second_name', 'text')}
+    ${ShortField('{{Телефон}}', 'phone', 'phone')}
+    ${ShortField('{{Пароль}}', 'password', 'password')}
+    ${ShortField('{{Пароль (еще раз)}}', 'password', 'password')}
+    ${Button('{{Зарегистрироваться}}', 'submit', ['btn', 'form__btn', 'form__field'])}
+    ${Link('{{Войти}}', '#', ['link', 'form__link', 'form__field'])}
   </form>`;
 
 const formAuth = () =>
-  `<form class="form">
+  `<form class="form form--sign">
     ${Title(['form__title'], 'Вход')}
-    ${FormField('{{Логин}}', 'login', 'text')}
-    ${FormField('{{Пароль}}', 'password', 'password')}
-    <div class="form__actions">
-      ${Link('{{Войти}}', '{{#}}', ['btn', 'form__btn'])}
-      ${Link('{{Нет аккаунта?}}', '{{#}}', ['link', 'form__link'])}
-    </div>
+    ${ShortField('{{Логин}}', 'login', 'text')}
+    ${ShortField('{{Пароль}}', 'password', 'password')}
+    ${Button('{{Войти}}', 'submit', ['btn', 'form__btn', 'form__field'])}
+    ${Link('{{Нет аккаунта?}}', '#', ['link', 'form__link', 'form__field'])}
   </form>`;
 
 const formUserProfile = () =>
   `<form class="form form--user">
-      ${AvatarInput(['input', 'input--file'], ['label', 'avatar'], 'avatar')}
+      ${Avatar(['label', 'avatar', 'form__avatar'])}
       ${Title(['form__title'], 'Пользователь')}
-      ${FormField('{{Почта}}', 'email', 'email', true)}
-      ${FormField('{{Логин}}', 'login', 'text', true)}
-      ${FormField('{{Имя}}', 'first_name', 'text', true)}
-      ${FormField('{{Фамилия}}', 'second_name', 'text', true)}
-      ${FormField('{{Имя в чате}}', 'display_name', 'text', true)}
-      ${FormField('{{Телефон}}', 'phone', 'phone', true)}
+      ${LongField('{{Почта}}', 'email', 'email')}
+      ${LongField('{{Логин}}', 'login', 'text')}
+      ${LongField('{{Имя}}', 'first_name', 'text')}
+      ${LongField('{{Фамилия}}', 'second_name', 'text')}
+      ${LongField('{{Имя в чате}}', 'display_name', 'text')}
+      ${LongField('{{Телефон}}', 'phone', 'phone')}
       <div class="form__actions">
-        ${Link('{{Изменить данные}}', '{{#}}', ['link', 'form__link', 'link--long'])}
-        ${Link('{{Изменить пароль}}', '{{#}}', ['link', 'form__link', 'link--long'])}
-        ${Link('{{Выйти}}', '{{#}}', ['link', 'link--blue', 'form__link', 'link--long'])}
+        ${LinkField('{{Изменить данные}}', '#', ['link', 'form__link', 'link--long'])}
+        ${LinkField('{{Изменить пароль}}', '#', ['link', 'form__link', 'link--long'])}
+        ${LinkField('{{Выйти}}', '#', ['link', 'link--yellow', 'form__link', 'link--long'])}
       </div>
     </form>`;
 
 const formUserChangeData = () =>
   `<form class="form form--user">
-      ${AvatarInput(['input', 'input--file'], ['label', 'avatar'], 'avatar')}
-      ${FormField('{{Почта}}', 'email', 'email', true)}
-      ${FormField('{{Логин}}', 'login', 'text', true)}
-      ${FormField('{{Имя}}', 'first_name', 'text', true)}
-      ${FormField('{{Фамилия}}', 'second_name', 'text', true)}
-      ${FormField('{{Имя в чате}}', 'display_name', 'text', true)}
-      ${FormField('{{Телефон}}', 'phone', 'phone', true)}
-      ${Link('{{Сохранить}}', '{{#}}', ['btn', 'form__btn'])}
-      </form>`;
+      ${LabledInput(['label__input'], ['label', 'avatar', 'form__avatar'], 'avatar')}
+      ${Title(['form__title'], 'Пользователь')}
+      ${LongField('{{Почта}}', 'email', 'email')}
+      ${LongField('{{Логин}}', 'login', 'text')}
+      ${LongField('{{Имя}}', 'first_name', 'text')}
+      ${LongField('{{Фамилия}}', 'second_name', 'text')}
+      ${LongField('{{Имя в чате}}', 'display_name', 'text')}
+      ${LongField('{{Телефон}}', 'phone', 'phone')}
+      ${Button('{{Сохранить}}', 'submit', ['btn', 'form__btn'])}
+    </form>`;
 
+const formUserChangePwd = () =>
+  `<form class="form form--user">
+      ${Avatar(['label', 'avatar', 'form__avatar'])}
+      ${Title(['form__title'], 'Пользователь')}
+      ${LongField('{{Старый пароль}}', 'oldPassword', 'password')}
+      ${LongField('{{Новый пароль}}', 'newPassword', 'password')}
+      ${LongField('{{Повторите новый пароль}}', 'newPassword', 'password')}
+      ${Button('{{Сохранить}}', 'submit', ['btn', 'form__btn'])}
+    </form>`;
 
-export { formSign, formAuth, formUserProfile, formUserChangeData };
+export { formSign, formAuth, formUserProfile, formUserChangeData, formUserChangePwd };

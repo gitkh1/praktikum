@@ -1,3 +1,5 @@
-import {formUserChangeData} from "../modules/Form/Form";
+import { formUserChangeData } from "../modules/Form/Form";
 
-export default UserProfile = () => `${formUserChangeData()}`;
+const UserChangeData = () => formUserChangeData();
+
+export default UserChangeData;

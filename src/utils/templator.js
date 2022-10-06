@@ -4,23 +4,29 @@
 import isEmpty from "./isEmpty";
 export default class Templator {
   elementRegExp = /(<[^<\n]*>)|({{.*}})/gi;
-  openElementRegExp = /(<[^\/<\n]*>)/gi;
+  openElementRegExp = /(<[^\/][^><\n]*>)/gm;
   closeElementRegExp = /<\/[\w]*>/gi;
   tagNameRegExp = /(<[^\/][0-9a-z]*)/gi;
   classNamesRegExp = /class="([^=<>\n]*)"/gm;
-  typeNameRegExp = /type="([^=<>\n]*)"/gm;
-  nameNameRegExp = /name="([^=<>\n]*)"/gm;
   loopOpenRegExp = /({{%each.*}})/gi;
   loopCloseRegExp = /({{\/%each}})/gi;
   inputRegExp = /(<input[^<\n]*>)/gm;
   imgRegExp = /(<img[^<\n]*>)/gm;
   buttonRegExp = /(<button[^<\n]*>)/gm;
+  quotesRegExp = /"([^=<>\n]*)"/gm;
+  propsRegExp = {
+    type: /type="([^=<>\n]*)"/gm,
+    src: /src="([^=<>\n]*)"/gm,
+    href: /href="([^=<>\n]*)"/gm,
+    name: /name="([^=<>\n]*)"/gm,
+    placeholder: /placeholder="([^=<>\n]*)"/gm
+  }
 
   constructor(template) {
     this._template = template;
   }
 
-  get(obj, path, defaultValue) {
+  get(obj, path) {
     const keys = path.split('.');
     let result = obj;
     for (const key of keys) {
@@ -51,29 +57,52 @@ export default class Templator {
     }
   }
 
-  createElement(description, ctx) {
+  setElementProps(description, element) {
+    for (const [key, regexp] of Object.entries(this.propsRegExp)) {
+      let propName;
+      if (!isEmpty(description.match(regexp))) {
+        if (!isEmpty(description.match(regexp)[0])) {
+          if (!isEmpty(description.match(regexp)[0].match(this.quotesRegExp))) {
+            if (!isEmpty(description.match(regexp)[0].match(this.quotesRegExp)[0])) {
+              propName = description.match(regexp)[0].match(this.quotesRegExp)[0].slice(1, -1).trim();
+              if (!isEmpty(propName)) {
+                element[key] = propName;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  setElementClasses(description, element) {
+    if (!isEmpty(description.match(this.classNamesRegExp))) {
+      if (!isEmpty(description.match(this.classNamesRegExp)[0])) {
+        if (!isEmpty(description.match(this.classNamesRegExp)[0].match(this.quotesRegExp))) {
+          if (!isEmpty(description.match(this.classNamesRegExp)[0].match(this.quotesRegExp)[0])) {
+            const classNames = description.match(this.classNamesRegExp)[0].
+              match(this.quotesRegExp)[0].slice(1, -1).trim().split(' ');
+            if (!isEmpty(classNames)) {
+              classNames.filter(className => !isEmpty(className)).
+                forEach(className => element.classList.add(className));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createElement(description) {
     if (!description.match(this.tagNameRegExp)) return;
-    
+
     const tagName = description.match(this.tagNameRegExp)[0].slice(1).toLowerCase();
     const newElement = document.createElement(tagName);
-    if (description.match(this.classNamesRegExp)) {
-      const classNames = description.match(this.classNamesRegExp)[0].slice(7, -1).trim().split(' ');
-      if (!isEmpty(classNames)) {
-        classNames.forEach(className => newElement.classList.add(className));
-      }
-    };
-    if (description.match(this.typeNameRegExp)) {
-      const typeName = description.match(this.typeNameRegExp)[0].slice(6, -1).trim();
-      newElement.type = typeName;
-    }
-    if (description.match(this.nameNameRegExp)) {
-      const nameName = description.match(this.nameNameRegExp)[0].slice(6, -1).trim();
-      newElement.name = nameName;
-    }
+    this.setElementClasses(description, newElement)
+    this.setElementProps(description, newElement);
     return newElement;
   }
 
-  createTextElement(description, ctx) {
+  createTextContent(description, ctx) {
     const textName = description.slice(2, -2).trim();
     const textContent = this.get(ctx, textName);
     return textContent;
@@ -99,12 +128,14 @@ export default class Templator {
     });
     i = j + k;
     cursorElement.append(loopFragment);
+
     return [cursorElement, i];
   }
 
   routeElement(match, ctx, cursorElement) {
     const tagType = this.getTagType(match);
     let newElement;
+
     switch (tagType) {
       case 'element img':
         newElement = this.createElement(match, ctx);
@@ -120,7 +151,7 @@ export default class Templator {
         cursorElement = newElement;
         break;
       case 'element text':
-        newElement = this.createTextElement(match, ctx);
+        newElement = this.createTextContent(match, ctx);
         cursorElement.textContent = newElement;
         break;
       case 'element close':
@@ -129,6 +160,7 @@ export default class Templator {
       default:
         break;
     }
+
     return cursorElement;
   }
 
@@ -139,7 +171,9 @@ export default class Templator {
   _compileTemplate(ctx) {
     const fragment = document.createDocumentFragment();
     let currentElement = fragment;
+
     const matches = this._template.match(this.elementRegExp);
+
     let i = 0;
     while (i < matches.length) {
       const match = matches[i];
@@ -150,6 +184,7 @@ export default class Templator {
       };
       i++;
     }
+
     return fragment;
   }
 

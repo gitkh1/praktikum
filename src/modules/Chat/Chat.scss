@@ -1,0 +1,79 @@
+@import "../../layouts/Consts.scss";
+
+.chat {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+
+
+  &__menu {
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+  }
+
+  &__wrapper {
+    background-color: #1d1e1d;
+    flex: 1;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+
+  &__content:hover {
+    overflow-y: auto;
+  }
+
+  &__new-message {
+    height: 55px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  &__form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+  }
+
+  &__btn {
+    text-transform: none;
+  }
+
+  &__friend {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+}
+
+.user {
+
+  &__avatar {
+    width: 35px;
+    height: 35px;
+    background: $light-grey;
+    margin-right: 10px;
+  }
+
+  &__name {
+    color: $light-grey;
+  }
+}

@@ -1,6 +1,5 @@
-import inputStyle from "./Input.scss";
-
-export default AvatarInput = (classesInput, classesLabel, name) =>
+export default LabledInput = (classesInput, classesLabel, name, src) =>
   `<label class="${classesLabel.join(' ')}">
+    <img src="${src}">
     <input class="${classesInput.join(' ')}" type="file" name="${name}">
   </label>`;

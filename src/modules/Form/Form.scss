@@ -1,14 +1,23 @@
 @import "../../layouts/Consts.scss";
 
 .form {
-  padding: 30px;
-  background-color: $background-light;
-  border-radius: 12px;
-  width: 340px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+  align-self: center;
+
+  &--sign {
+    width: 340px;
+    background-color: #4f4f56;
+    border-radius: 12px;
+    padding: 30px;
+  }
+
+  &--user {
+    width: 510px;
+    background-color: transparent;
+  }
 
   &__title {
     font-size: 20px;
@@ -18,7 +27,11 @@
   }
 
   &__field {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &__actions {
@@ -30,10 +43,18 @@
   }
 
   &__btn {
-    margin-bottom: 16px;
+    width: 280px;
+    align-self: center;
   }
 
   &__link {
     align-self: center;
+  }
+
+  &__avatar {
+    align-self: center;
+    width: 130px;
+    height: 130px;
+    background: #EFEFEF;  
   }
 }
