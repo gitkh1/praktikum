@@ -1,0 +1,49 @@
+@import "../../layouts/Consts.scss";
+
+.new-msg {
+
+  &__field {
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &--btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: $blue;
+      transition: all $time;
+      position: relative;
+
+      &:hover {
+        background: $blue-dark;
+        transition: all $time;
+      }
+
+      &::after {
+        content: '';
+        width: 15px;
+        height: 2px;
+        background: #fff;
+        position: absolute;
+        left: 6px;
+        top: 15px;
+      }
+
+      &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: none;
+        border-bottom: 2px #fff solid;
+        border-right: 2px #fff solid;
+        transform: rotate(-45deg);
+        position: absolute;
+        left: 12px;
+        top: 11px;
+      }
+    }
+  }
+}

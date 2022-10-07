@@ -1,0 +1,19 @@
+@import "../../layouts/Consts.scss";
+
+.link {
+  cursor: pointer;
+  color: $blue;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &--yellow {
+    color: $yellow;
+  }
+
+  &--grey {
+    color: $grey;
+  }
+}

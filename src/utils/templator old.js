@@ -59,35 +59,44 @@ class Templator {
   }
 
   setElementProps(description, element) {
-    const firstMatch = 0;
-
-    for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
-      const propValue = description?.match(regexp)?.[firstMatch]?.
-        match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim();
-      if (!isEmpty(propValue)) {
-        element[prop] = propValue;
-      };
+    for (const [key, regexp] of Object.entries(this.propsRegExp)) {
+      let propName;
+      if (!isEmpty(description.match(regexp))) {
+        if (!isEmpty(description.match(regexp)[0])) {
+          if (!isEmpty(description.match(regexp)[0].match(this.quotesRegExp))) {
+            if (!isEmpty(description.match(regexp)[0].match(this.quotesRegExp)[0])) {
+              propName = description.match(regexp)[0].match(this.quotesRegExp)[0].slice(1, -1).trim();
+              if (!isEmpty(propName)) {
+                element[key] = propName;
+              }
+            }
+          }
+        }
+      }
     }
   }
 
   setElementClasses(description, element) {
-    const firstMatch = 0;
-    const classNames = description?.match(this.classNamesRegExp)?.[firstMatch]?.
-      match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim().split(' ');
-
-    if (!isEmpty(classNames)) {
-      classNames.filter(className => !isEmpty(className)).
-        forEach(className => element.classList.add(className));
+    if (!isEmpty(description.match(this.classNamesRegExp))) {
+      if (!isEmpty(description.match(this.classNamesRegExp)[0])) {
+        if (!isEmpty(description.match(this.classNamesRegExp)[0].match(this.quotesRegExp))) {
+          if (!isEmpty(description.match(this.classNamesRegExp)[0].match(this.quotesRegExp)[0])) {
+            const classNames = description.match(this.classNamesRegExp)[0].
+              match(this.quotesRegExp)[0].slice(1, -1).trim().split(' ');
+            if (!isEmpty(classNames)) {
+              classNames.filter(className => !isEmpty(className)).
+                forEach(className => element.classList.add(className));
+            }
+          }
+        }
+      }
     }
   }
 
   createElement(description) {
-    if (!description?.match(this.tagNameRegExp)) {
-      return
-    };
+    if (!description.match(this.tagNameRegExp)) return;
 
-    const firstMatch = 0;
-    const tagName = description?.match(this.tagNameRegExp)?.[firstMatch]?.slice(1).toLowerCase();
+    const tagName = description.match(this.tagNameRegExp)[0].slice(1).toLowerCase();
     const newElement = document.createElement(tagName);
     this.setElementClasses(description, newElement)
     this.setElementProps(description, newElement);
@@ -101,8 +110,7 @@ class Templator {
   }
 
   createloopElement(match, matches, i, ctx, cursorElement) {
-    const firstMatch = 0;
-    const ctxName = match.match(this.loopOpenRegExp)?.[firstMatch]?.slice(7, -2).trim();
+    const ctxName = match.match(this.loopOpenRegExp)[0].slice(7, -2).trim();
     const thisCtx = this.get(ctx, ctxName);
     const loopFragment = document.createDocumentFragment();
     let currentInLoopElement = loopFragment;

@@ -1,0 +1,78 @@
+@import "../../layouts/Consts.scss";
+
+.friend {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  transition: all $time;
+  padding: 15px 10px;
+  cursor: pointer;
+
+  &:hover {
+    background: $background-light;
+    transition: all $time;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__img {
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    background-color: $grey;
+  }
+
+  &__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 10px;
+  }
+
+  &__name {
+    color: $light-grey;
+    font-weight: 500;
+  }
+
+  &__message {
+    color: $grey;
+    font-weight: 300;
+    overflow: hidden;
+  }
+
+  &__info {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  &__time {
+    font-size: 14px;
+  }
+
+  &__unread {
+    font-size: 14px;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: $blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

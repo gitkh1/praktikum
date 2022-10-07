@@ -1,0 +1,17 @@
+@import "../../layouts/Consts.scss";
+
+.btn {
+  cursor: pointer;
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: $blue;
+  transition: all $time;
+  color: #fff;
+  text-align: center;
+
+  &:hover {
+    background-color: $blue-dark;
+    transition: all $time;
+  }
+}

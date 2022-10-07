@@ -1,29 +1,13 @@
 import Templator from "./utils/templator";
-
-const str = `<div class="{{ className }}">
-<span onClick="{{ handleClick }}">{{text}}</span>
-{{%each users}}
-<span>{{ name }}</span>
-{{/%each}}
-</div>
-`;
-
-const str2 = `<div class="">
-{{%each users}}
-<span>{{ name }}</span>
-{{/%each}}
-</div>
-`;
+import Auth from "./pages/Auth";
+import ErrNotFound from "./pages/ErrNotFound";
+import Style from "./layouts/Layout.scss";
+import UserProfile from "./pages/UserProfile";
+import UserChangeData from "./pages/UserChangeData";
+import UserChangePwd from "./pages/UserChangePwd";
+import Sign from "./pages/Sign";
+import Messeneger from "./pages/Messeneger";
 
 const root = document.querySelector('#root');
-let newFragment = new Templator(str);
-root.append(newFragment.compile({
-  text: 'Привет',
-  className: 'myClass',
-  user: {
-    info: {
-      firstName: 'Василий'
-    }
-  },
-  users: [{ name: 'Василий' }, { name: 'Николай' }, {name: 'Петр'}],
-}));
+let newFragment = new Templator(Messeneger());
+root.append(newFragment.compile({}));

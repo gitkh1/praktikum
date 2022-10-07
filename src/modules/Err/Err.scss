@@ -1,0 +1,20 @@
+@import "../../layouts/Consts.scss";
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__title {
+    font-size: 40px;
+    color: $light-grey;
+    margin-bottom: 10px;
+  }
+
+  &__descr {
+    font-size: 20px;
+    color: $light-grey;
+    margin-bottom: 40px;
+  }
+}
