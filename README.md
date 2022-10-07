@@ -29,3 +29,7 @@ Build-версия проекта при помощи parcel - команда `n
 ## Проект на Netlify
 
 Проект на Netlify: https://lighthearted-shortbread-cd4b01.netlify.app/
+
+## Pull requests
+
+Sprint 1 https://github.com/gitkh1/praktikum/pull/1

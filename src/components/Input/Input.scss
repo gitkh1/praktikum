@@ -2,8 +2,11 @@
 
 input {
   width: 100%;
-  outline: none;
   background: none;
+
+  &:focus {
+    outline: solid $blue;
+  }
 }
 
 .colored-input {

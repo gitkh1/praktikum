@@ -11,7 +11,7 @@ const Friend = (className) =>
       <div class="friend__message">{{Привет, как дела}}</div>
     </div>
     <div class="friend__info">
-      <div class="friend__time">{{21:45}}</div>
+      <time class="friend__time">{{21:45}}</time>
       <div class="friend__unread">{{4}}</div>
     </div>
   </li>`;
