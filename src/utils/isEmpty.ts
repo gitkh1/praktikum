@@ -1,16 +1,4 @@
-/**
- * Checks if a JavaScript value is empty
- * @example
- *    isEmpty(null); // true
- *    isEmpty(undefined); // true
- *    isEmpty(''); // true
- *    isEmpty([]); // true
- *    isEmpty({}); // true
- * @param {any} value - item to test
- * @returns {boolean} true if empty, otherwise false
- */
-
-function isEmpty(value) {
+function isEmpty(value: unknown): boolean {
   return (
     value === 0 ||
     value === null || // check for null

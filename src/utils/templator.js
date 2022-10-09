@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 // Simple template engine ((template, context) => DOM element)
 // Loop support {{%each}} -- {{/%each}}
 // Does not support loops within loops.
@@ -66,7 +67,7 @@ class Templator {
         match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim();
       if (!isEmpty(propValue)) {
         element[prop] = propValue;
-      };
+      }
     }
   }
 
@@ -84,7 +85,7 @@ class Templator {
   createElement(description) {
     if (!description?.match(this.tagNameRegExp)) {
       return
-    };
+    }
 
     const firstMatch = 0;
     const tagName = description?.match(this.tagNameRegExp)?.[firstMatch]?.slice(1).toLowerCase();
@@ -115,7 +116,7 @@ class Templator {
         currentInLoopElement = this.routeElement(thisMatch, ctx, currentInLoopElement);
         j++;
         thisMatch = matches[j];
-      };
+      }
       k = j - i;
       j = i;
     });
@@ -174,7 +175,7 @@ class Templator {
         currentElement = this.routeElement(match, ctx, currentElement);
       } else if (this.getTagType(match).includes('loop open')) {
         [currentElement, i] = this.createloopElement(match, matches, i, ctx, currentElement);
-      };
+      }
       i++;
     }
 
