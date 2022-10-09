@@ -1,6 +1,6 @@
 import Friends from "../modules/Friends/Friends";
 import Chat from "../modules/Chat/Chat";
 
-const Messanager = () => Friends() + Chat();
+const Messenger = () => Friends() + Chat();
 
-export default Messanager;
+export default Messenger;

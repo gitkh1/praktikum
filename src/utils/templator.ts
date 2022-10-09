@@ -3,19 +3,24 @@
 // Loop support {{%each}} -- {{/%each}}
 // Does not support loops within loops.
 import isEmpty from "./isEmpty";
+
+type DOMElement = HTMLElement | DocumentFragment;
 class Templator {
-  _template: any;
-  elementRegExp = /(<[^<\n]*>)|({{.*}})/gi;
-  openElementRegExp = /(<[^\/][^><\n]*>)/gm;
-  closeElementRegExp = /<\/[\w]*>/gi;
-  tagNameRegExp = /(<[^\/][0-9a-z]*)/gi;
-  classNamesRegExp = /class="([^=<>\n]*)"/gm;
-  loopOpenRegExp = /({{%each.*}})/gi;
-  loopCloseRegExp = /({{\/%each}})/gi;
-  inputRegExp = /(<input[^<\n]*>)/gm;
-  imgRegExp = /(<img[^<\n]*>)/gm;
-  buttonRegExp = /(<button[^<\n]*>)/gm;
-  quotesRegExp = /"([^=<>\n]*)"/gm;
+  _template: string;
+
+  elementsRegExp = {
+    element: /(<[^<\n]*>)|({{.*}})/gi,
+    open: /(<[^\/][^><\n]*>)/gm,
+    close: /<\/[\w]*>/gi,
+    tag: /(<[^\/][0-9a-z]*)/gi,
+    classes: /class="([^=<>\n]*)"/gm,
+    loopOpen: /({{%each.*}})/gi,
+    loopClose: /({{\/%each}})/gi,
+    input: /(<input[^<\n]*>)/gm,
+    img: /(<img[^<\n]*>)/gm,
+    button: /(<button[^<\n]*>)/gm,
+    quotes: /"([^=<>\n]*)"/gm,
+  }
   propsRegExp = {
     type: /type="([^=<>\n]*)"/gm,
     src: /src="([^=<>\n]*)"/gm,
@@ -25,11 +30,14 @@ class Templator {
     placeholder: /placeholder="([^=<>\n]*)"/gm
   }
 
-  constructor(template: any) {
+  constructor(template: string) {
     this._template = template;
   }
 
-  get(obj: any, path: any) {
+  get(obj: object, path: string | undefined) {
+    if (path === undefined) {
+      return obj;
+    }
     const keys = path.split('.');
     let result = obj;
     for (const key of keys) {
@@ -42,120 +50,127 @@ class Templator {
     return result ?? path;
   }
 
-  getTagType(description: any) {
-    if (description.match(this.imgRegExp)) {
+  getTagType(description: string): string {
+    if (description.match(this.elementsRegExp.img)) {
       return 'element img';
-    } else if (description.match(this.inputRegExp)) {
+    } else if (description.match(this.elementsRegExp.input)) {
       return 'element input';
-    } else if (description.match(this.openElementRegExp)) {
+    } else if (description.match(this.elementsRegExp.open)) {
       return 'element open';
-    } else if (description.match(this.closeElementRegExp)) {
+    } else if (description.match(this.elementsRegExp.close)) {
       return 'element close';
-    } else if (description.match(this.loopOpenRegExp)) {
+    } else if (description.match(this.elementsRegExp.loopOpen)) {
       return 'loop open';
-    } else if (description.match(this.loopCloseRegExp)) {
+    } else if (description.match(this.elementsRegExp.loopClose)) {
       return 'loop close';
     } else {
       return 'element text';
     }
   }
 
-  setElementProps(description: any, element: any) {
+  setElementProps(description: string, element: HTMLElement) {
     const firstMatch = 0;
 
-    // @ts-expect-error TS(2550): Property 'entries' does not exist on type 'ObjectC... Remove this comment to see the full error message
     for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
       const propValue = description?.match(regexp)?.[firstMatch]?.
-        match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim();
+        match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(1, -1).trim();
       if (!isEmpty(propValue)) {
         element[prop] = propValue;
       }
     }
   }
 
-  setElementClasses(description: any, element: any) {
+  setElementClasses(description: string, element: HTMLElement) {
     const firstMatch = 0;
-    const classNames = description?.match(this.classNamesRegExp)?.[firstMatch]?.
-      match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim().split(' ');
+    const classNames = description?.match(this.elementsRegExp.classes)?.[firstMatch]?.
+      match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(1, -1).trim().split(' ');
 
-    if (!isEmpty(classNames)) {
-      classNames.filter((className: any) => !isEmpty(className)).
-        forEach((className: any) => element.classList.add(className));
+    if ((classNames) && (!isEmpty(classNames))) {
+      classNames.filter((className: string) => !isEmpty(className)).
+        forEach((className: string) => element.classList.add(className));
     }
   }
 
-  createElement(description: any) {
-    if (!description?.match(this.tagNameRegExp)) {
-      return
+  createElement(description: string): HTMLElement | null {
+    const firstMatch = 0;
+    const tagName = description?.match(this.elementsRegExp.tag)?.[firstMatch]?.slice(1).toLowerCase();
+    if (!tagName) {
+      return null;
     }
 
-    const firstMatch = 0;
-    const tagName = description?.match(this.tagNameRegExp)?.[firstMatch]?.slice(1).toLowerCase();
     const newElement = document.createElement(tagName);
     this.setElementClasses(description, newElement)
     this.setElementProps(description, newElement);
     return newElement;
   }
 
-  createTextContent(description: any, ctx: any) {
+  createTextContent(description: string, ctx: object): string {
     const textName = description.slice(2, -2).trim();
     const textContent = this.get(ctx, textName);
+    if (typeof textContent !== 'string') {
+      return "";
+    }
     return textContent;
   }
 
-  createloopElement(match: any, matches: any, i: any, ctx: any, cursorElement: any) {
+  createloopElement(match: string, matches: string[], i: number, ctx: object, cursorElement: DOMElement): [DOMElement, number] {
     const firstMatch = 0;
-    const ctxName = match.match(this.loopOpenRegExp)?.[firstMatch]?.slice(7, -2).trim();
+    const ctxName = match.match(this.elementsRegExp.loopOpen)?.[firstMatch]?.slice(7, -2).trim();
     const thisCtx = this.get(ctx, ctxName);
-    const loopFragment = document.createDocumentFragment();
-    let currentInLoopElement = loopFragment;
+    const loopFragment: DocumentFragment = document.createDocumentFragment();
+    let currentInLoopElement: DOMElement = loopFragment;
 
-    let j, k;
-    thisCtx.forEach((ctx: any) => {
-      j = i + 1;
-      let thisMatch = matches[j];
-      while (!this.getTagType(thisMatch).includes('loop close')) {
-        currentInLoopElement = this.routeElement(thisMatch, ctx, currentInLoopElement);
-        j++;
-        thisMatch = matches[j];
-      }
-      k = j - i;
-      j = i;
-    });
-    // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-    i = j + k;
-    cursorElement.append(loopFragment);
-
+    if (Array.isArray(thisCtx)) {
+      let j: number | undefined;
+      thisCtx.forEach((ctx: object) => {
+        j = i + 1;
+        let thisMatch = matches[j];
+        while (!this.getTagType(thisMatch).includes('loop close')) {
+          currentInLoopElement = this.routeElement(thisMatch, ctx, currentInLoopElement);
+          j++;
+          thisMatch = matches[j];
+        }
+      });
+      i = j || i;
+      cursorElement.append(loopFragment);
+    }
     return [cursorElement, i];
   }
 
-  routeElement(match: any, ctx: any, cursorElement: any) {
+  routeElement(match: string, ctx: object, cursorElement: DOMElement): DOMElement {
     const tagType = this.getTagType(match);
-    let newElement;
+    let newElement: HTMLElement | null;
+    let newTextContent: string;
 
     switch (tagType) {
       case 'element img':
-        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
-        newElement = this.createElement(match, ctx);
-        cursorElement.append(newElement);
+        newElement = this.createElement(match);
+        if (newElement) {
+          cursorElement.append(newElement);
+        }
         break;
       case 'element input':
-        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
-        newElement = this.createElement(match, ctx);
-        cursorElement.append(newElement);
+        newElement = this.createElement(match);
+        if (newElement) {
+          cursorElement.append(newElement);
+        }
         break;
       case 'element open':
-        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
-        newElement = this.createElement(match, ctx);
-        cursorElement.append(newElement);
-        cursorElement = newElement;
+        newElement = this.createElement(match);
+        if (newElement) {
+          cursorElement.append(newElement);
+          cursorElement = newElement;
+        }
         break;
       case 'element text':
-        newElement = this.createTextContent(match, ctx);
-        cursorElement.textContent = newElement;
+        newTextContent = this.createTextContent(match, ctx);
+        cursorElement.textContent = newTextContent;
         break;
       case 'element close':
-        cursorElement = cursorElement.parentNode;
+        if ((cursorElement.parentNode instanceof HTMLElement) ||
+          (cursorElement.parentNode instanceof DocumentFragment)) {
+          cursorElement = cursorElement.parentNode;
+        }
         break;
       default:
         break;
@@ -164,27 +179,27 @@ class Templator {
     return cursorElement;
   }
 
-  compile(ctx: any) {
+  compile(ctx: object): DocumentFragment {
     return this._compileTemplate(ctx);
   }
 
-  _compileTemplate(ctx: any) {
+  _compileTemplate(ctx: object): DocumentFragment {
     const fragment = document.createDocumentFragment();
-    let currentElement = fragment;
+    let currentElement: DOMElement = fragment;
 
-    const matches = this._template.match(this.elementRegExp);
-
-    let i = 0;
-    while (i < matches.length) {
-      const match = matches[i];
-      if (this.getTagType(match).includes('element')) {
-        currentElement = this.routeElement(match, ctx, currentElement);
-      } else if (this.getTagType(match).includes('loop open')) {
-        [currentElement, i] = this.createloopElement(match, matches, i, ctx, currentElement);
+    const matches = this._template.match(this.elementsRegExp.element);
+    if (Array.isArray(matches)) {
+      let i = 0;
+      while (i < matches.length) {
+        const match = matches[i];
+        if (this.getTagType(match).includes('element')) {
+          currentElement = this.routeElement(match, ctx, currentElement);
+        } else if (this.getTagType(match).includes('loop open')) {
+          [currentElement, i] = this.createloopElement(match, matches, i, ctx, currentElement);
+        }
+        i++;
       }
-      i++;
     }
-
     return fragment;
   }
 }

@@ -1,10 +1,9 @@
 import Message from "../../components/Message/Message";
 import NewMessage from "../../components/NewMessage/NewMessage";
-// @ts-expect-error TS(2307): Cannot find module './Chat.scss' or its correspond... Remove this comment to see the full error message
-import ChatStyle from "./Chat.scss";
+import "./Chat.scss";
+import "../../components/Avatar/Avatar.scss";
 
-const Chat = () =>
-
+const Chat = (): string =>
   `<div class="chat">
     <div class="chat__menu">
       <div class="chat__friend user">

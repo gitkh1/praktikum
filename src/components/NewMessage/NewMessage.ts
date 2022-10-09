@@ -1,11 +1,8 @@
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import LabledInput from "../Input/LabledInput";
-// @ts-expect-error TS(2307): Cannot find module './NewMessage.scss' or its corr... Remove this comment to see the full error message
-import NewMessageStyle from "./NewMessage.scss";
-// @ts-expect-error TS(2307): Cannot find module './scrap.svg' or its correspond... Remove this comment to see the full error message
-import Scrap from "./scrap.svg"
-
+import "./NewMessage.scss";
+import Scrap from "./scrap.svg";
 
 const NewMessage = () =>
   `<form action="#" class="chat__form new-msg">

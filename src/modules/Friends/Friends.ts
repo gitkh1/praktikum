@@ -1,11 +1,9 @@
 import Friend from "../../components/Friend/Friend";
 import Input from "../../components/Input/Input";
 import Link from "../../components/Link/Link";
-// @ts-expect-error TS(2307): Cannot find module './Friends.scss' or its corresp... Remove this comment to see the full error message
-import FriedsListStyle from "./Friends.scss";
+import "./Friends.scss";
 
-const Friends = () =>
-
+const Friends = (): string =>
   `<div class="friends">
     <nav class="friends__menu">
       <div class="friends__profile">

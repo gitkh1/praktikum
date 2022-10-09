@@ -4,8 +4,7 @@ import { ShortField, LongField, LinkField } from "../../components/FormField/For
 import LabledInput from "../../components/Input/LabledInput";
 import Link from "../../components/Link/Link";
 import Title from "../../components/Title/Title";
-// @ts-expect-error TS(2307): Cannot find module './Form.scss' or its correspond... Remove this comment to see the full error message
-import FormStyle from "./Form.scss";
+import "./Form.scss";
 
 const formSign = () =>
   `<form class="form form--sign">
@@ -32,9 +31,7 @@ const formAuth = () =>
 
 const formUserProfile = () =>
   `<form class="form form--user">
-      ${      
-// @ts-expect-error TS(2554): Expected 3 arguments, but got 1.
-Avatar(['label', 'avatar', 'form__avatar'])}
+      ${Avatar(['label', 'avatar', 'form__avatar'])}
       ${Title(['form__title'], 'Пользователь')}
       ${LongField('{{Почта}}', 'email', 'email')}
       ${LongField('{{Логин}}', 'login', 'text')}
@@ -51,9 +48,7 @@ Avatar(['label', 'avatar', 'form__avatar'])}
 
 const formUserChangeData = () =>
   `<form class="form form--user">
-      ${      
-// @ts-expect-error TS(2554): Expected 4 arguments, but got 3.
-LabledInput(['label__input'], ['label', 'avatar', 'form__avatar'], 'avatar')}
+      ${LabledInput(['label__input'], ['label', 'avatar', 'form__avatar'], 'avatar', '#')}
       ${Title(['form__title'], 'Пользователь')}
       ${LongField('{{Почта}}', 'email', 'email')}
       ${LongField('{{Логин}}', 'login', 'text')}
@@ -66,9 +61,8 @@ LabledInput(['label__input'], ['label', 'avatar', 'form__avatar'], 'avatar')}
 
 const formUserChangePwd = () =>
   `<form class="form form--user">
-      ${      
-// @ts-expect-error TS(2554): Expected 3 arguments, but got 1.
-Avatar(['label', 'avatar', 'form__avatar'])}
+      ${
+  Avatar(['label', 'avatar', 'form__avatar'])}
       ${Title(['form__title'], 'Пользователь')}
       ${LongField('{{Старый пароль}}', 'oldPassword', 'password')}
       ${LongField('{{Новый пароль}}', 'newPassword', 'password')}

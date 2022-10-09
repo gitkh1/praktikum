@@ -1,7 +1,6 @@
-// @ts-expect-error TS(2307): Cannot find module './Friend.scss' or its correspo... Remove this comment to see the full error message
-import FriendStyle from "./Friend.scss";
+import "./Friend.scss";
 
-const Friend = (className: any) => `<li class="friend ${className}">
+const Friend = (className: string) => `<li class="friend ${className}">
   <div class="friend__photo">
     <img alt="" class="friend__img avatar">
   </div>
