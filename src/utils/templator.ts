@@ -4,6 +4,7 @@
 // Does not support loops within loops.
 import isEmpty from "./isEmpty";
 class Templator {
+  _template: any;
   elementRegExp = /(<[^<\n]*>)|({{.*}})/gi;
   openElementRegExp = /(<[^\/][^><\n]*>)/gm;
   closeElementRegExp = /<\/[\w]*>/gi;
@@ -24,11 +25,11 @@ class Templator {
     placeholder: /placeholder="([^=<>\n]*)"/gm
   }
 
-  constructor(template) {
+  constructor(template: any) {
     this._template = template;
   }
 
-  get(obj, path) {
+  get(obj: any, path: any) {
     const keys = path.split('.');
     let result = obj;
     for (const key of keys) {
@@ -41,7 +42,7 @@ class Templator {
     return result ?? path;
   }
 
-  getTagType(description) {
+  getTagType(description: any) {
     if (description.match(this.imgRegExp)) {
       return 'element img';
     } else if (description.match(this.inputRegExp)) {
@@ -59,9 +60,10 @@ class Templator {
     }
   }
 
-  setElementProps(description, element) {
+  setElementProps(description: any, element: any) {
     const firstMatch = 0;
 
+    // @ts-expect-error TS(2550): Property 'entries' does not exist on type 'ObjectC... Remove this comment to see the full error message
     for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
       const propValue = description?.match(regexp)?.[firstMatch]?.
         match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim();
@@ -71,18 +73,18 @@ class Templator {
     }
   }
 
-  setElementClasses(description, element) {
+  setElementClasses(description: any, element: any) {
     const firstMatch = 0;
     const classNames = description?.match(this.classNamesRegExp)?.[firstMatch]?.
       match(this.quotesRegExp)?.[firstMatch]?.slice(1, -1).trim().split(' ');
 
     if (!isEmpty(classNames)) {
-      classNames.filter(className => !isEmpty(className)).
-        forEach(className => element.classList.add(className));
+      classNames.filter((className: any) => !isEmpty(className)).
+        forEach((className: any) => element.classList.add(className));
     }
   }
 
-  createElement(description) {
+  createElement(description: any) {
     if (!description?.match(this.tagNameRegExp)) {
       return
     }
@@ -95,13 +97,13 @@ class Templator {
     return newElement;
   }
 
-  createTextContent(description, ctx) {
+  createTextContent(description: any, ctx: any) {
     const textName = description.slice(2, -2).trim();
     const textContent = this.get(ctx, textName);
     return textContent;
   }
 
-  createloopElement(match, matches, i, ctx, cursorElement) {
+  createloopElement(match: any, matches: any, i: any, ctx: any, cursorElement: any) {
     const firstMatch = 0;
     const ctxName = match.match(this.loopOpenRegExp)?.[firstMatch]?.slice(7, -2).trim();
     const thisCtx = this.get(ctx, ctxName);
@@ -109,7 +111,7 @@ class Templator {
     let currentInLoopElement = loopFragment;
 
     let j, k;
-    thisCtx.forEach(ctx => {
+    thisCtx.forEach((ctx: any) => {
       j = i + 1;
       let thisMatch = matches[j];
       while (!this.getTagType(thisMatch).includes('loop close')) {
@@ -120,26 +122,30 @@ class Templator {
       k = j - i;
       j = i;
     });
+    // @ts-expect-error TS(2532): Object is possibly 'undefined'.
     i = j + k;
     cursorElement.append(loopFragment);
 
     return [cursorElement, i];
   }
 
-  routeElement(match, ctx, cursorElement) {
+  routeElement(match: any, ctx: any, cursorElement: any) {
     const tagType = this.getTagType(match);
     let newElement;
 
     switch (tagType) {
       case 'element img':
+        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
         newElement = this.createElement(match, ctx);
         cursorElement.append(newElement);
         break;
       case 'element input':
+        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
         newElement = this.createElement(match, ctx);
         cursorElement.append(newElement);
         break;
       case 'element open':
+        // @ts-expect-error TS(2554): Expected 1 arguments, but got 2.
         newElement = this.createElement(match, ctx);
         cursorElement.append(newElement);
         cursorElement = newElement;
@@ -158,11 +164,11 @@ class Templator {
     return cursorElement;
   }
 
-  compile(ctx) {
+  compile(ctx: any) {
     return this._compileTemplate(ctx);
   }
 
-  _compileTemplate(ctx) {
+  _compileTemplate(ctx: any) {
     const fragment = document.createDocumentFragment();
     let currentElement = fragment;
 
@@ -181,7 +187,6 @@ class Templator {
 
     return fragment;
   }
-
 }
 
 export default Templator;
