@@ -5,10 +5,11 @@ import Avatar from "../../components/Avatar/Avatar";
 import Title from "../../components/Title/Title";
 import LongField from "../../components/Fields/LongField/LongField";
 import Button from "../../components/Button/Button";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import { template } from "./UserChangePwd.tmpl";
+import formHandler from "../../utils/formHadler";
 
-class UserChangePwd extends Block {
+class UserChangePwd extends View {
   constructor(props: object) {
     super(props);
   }
@@ -65,7 +66,7 @@ const button = new Button({
   classNames: ['btn', 'form__btn'],
 })
 
-const userpwd = new UserChangePwd({
+const userchangepwd = new UserChangePwd({
   formClasses: ['form', 'form--user'],
   avatar: avatar,
   title: title,
@@ -73,6 +74,11 @@ const userpwd = new UserChangePwd({
   password: password,
   password2: password2,
   button: button,
+  events: {
+    submit: formHandler,
+    focusin: formHandler,
+    focusout: formHandler,
+  },
 });
 
-export { userpwd };
+export { userchangepwd };

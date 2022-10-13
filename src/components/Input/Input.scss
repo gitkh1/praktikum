@@ -9,6 +9,10 @@ input {
   }
 }
 
+.input-invalid {
+  outline: solid $red;
+}
+
 .colored-input {
   background: $background-light;
   padding: 8px 10px 8px 55px;
@@ -16,7 +20,7 @@ input {
   color: $light-grey;
 
   &--search {
-    background: url(./search.svg) no-repeat 17px center;
+    background: url(./search.svg) $background-light no-repeat 17px center;
   }
 }
 

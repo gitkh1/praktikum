@@ -1,6 +1,6 @@
 import "./NewMessage.scss";
 import { template } from "./NewMessage.tmpl";
-import Block from "../../utils/Block";
+import Block from "../../utils/View";
 import Templator from "../../utils/templator";
 export default class NewMessage extends Block {
   constructor(props: object) {

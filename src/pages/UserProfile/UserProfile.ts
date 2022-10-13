@@ -5,10 +5,10 @@ import Avatar from "../../components/Avatar/Avatar";
 import Title from "../../components/Title/Title";
 import LongField from "../../components/Fields/LongField/LongField";
 import LinkField from "../../components/Fields/LinkField/LinkField";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import { template } from "./UserProfile.tmpl";
 
-class UserProfile extends Block {
+class UserProfile extends View {
   constructor(props: object) {
     super(props);
   }
@@ -92,21 +92,21 @@ const phone = new LongField({
 const changedata = new LinkField({
   fieldClasses: ['form__field', 'field', 'field--long'],
   description: 'Изменить данные',
-  href: '#',
+  href: '#userchangedata',
   linkClasses: ['link', 'form__link', 'link--long'],
 })
 
 const changepassword = new LinkField({
   fieldClasses: ['form__field', 'field', 'field--long'],
   description: 'Изменить пароль',
-  href: '#',
+  href: '#userchangepwd',
   linkClasses: ['link', 'form__link', 'link--long'],
 })
 
 const out = new LinkField({
   fieldClasses: ['form__field', 'field', 'field--long'],
   description: 'Выйти',
-  href: '#',
+  href: '#msg',
   linkClasses: ['link', 'link--yellow', 'form__link', 'link--long'],
 })
 

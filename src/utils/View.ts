@@ -1,13 +1,16 @@
+//Based class View of MVC
+
 import EventBus from "./EventBus";
 import Templator from "./templator";
 
-abstract class Block {
+export default abstract class View {
   private eventBus: () => EventBus;
   static EVENTS = {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
     FLOW_CDU: "flow:component-did-update",
-    FLOW_RENDER: "flow:render"
+    FLOW_RENDER: "flow:render",
+    FLOW_UNM: "flow:component-did-unmount"
   };
 
   _element: null | Element = null;
@@ -28,20 +31,21 @@ abstract class Block {
 
     this._tagName = tagName;
 
-    this._id = Math.trunc(Math.random()*(10 ** 9)).toString();
+    this._id = Math.trunc(Math.random() * (10 ** 9)).toString();
     this.props = this._makePropsProxy(props);
 
     const eventBus = new EventBus();
     this.eventBus = () => eventBus;
     this._registerEvents(eventBus);
-    eventBus.emit(Block.EVENTS.INIT);
+    eventBus.emit(View.EVENTS.INIT);
   }
 
   _registerEvents(eventBus: EventBus) {
-    eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
-    eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-    eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
-    eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
+    eventBus.on(View.EVENTS.INIT, this.init.bind(this));
+    eventBus.on(View.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+    eventBus.on(View.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+    eventBus.on(View.EVENTS.FLOW_RENDER, this._render.bind(this));
+    eventBus.on(View.EVENTS.FLOW_UNM, this._componentDidUnMount.bind(this));
   }
 
   _getChildren(propsAndChildren: object) {
@@ -49,7 +53,7 @@ abstract class Block {
     const props: { [key: string]: object | string | string[] } = {};
 
     Object.entries(propsAndChildren).forEach(([key, value]: [string, object | string | string[]]) => {
-      if (value instanceof Block) {
+      if (value instanceof View) {
         children[key] = value;
       } else {
         props[key] = value;
@@ -70,7 +74,7 @@ abstract class Block {
 
   init() {
     this._createResources();
-    this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+    this.eventBus().emit(View.EVENTS.FLOW_RENDER);
   }
 
   _componentDidMount() {
@@ -85,13 +89,13 @@ abstract class Block {
   }
 
   dispatchComponentDidMount() {
-    this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+    this.eventBus().emit(View.EVENTS.FLOW_CDM);
   }
 
   _componentDidUpdate() {
     const response: boolean = this.componentDidUpdate();
     if (response) {
-      this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+      this.eventBus().emit(View.EVENTS.FLOW_RENDER);
     }
   }
 
@@ -107,7 +111,7 @@ abstract class Block {
   };
 
   _render() {
-    const block = this.render();
+    const View = this.render();
 
     this._removeEvents();
 
@@ -115,8 +119,8 @@ abstract class Block {
       this._element.innerHTML = '';
     }
 
-    if (block) {
-      this._element?.append(block);
+    if (View) {
+      this._element?.append(View);
     }
 
     this._addEvents();
@@ -128,7 +132,6 @@ abstract class Block {
 
   compile(template: string, props: object) {
     const propsAndStubs: { [key: string]: string } = { ...props };
-    console.log(props)
 
     Object.entries(this.children).forEach(([key, child]) => {
       propsAndStubs[key] = `<div data-id="${child._id}"></div>`
@@ -162,7 +165,7 @@ abstract class Block {
       },
       set(target: { [key: string]: string | (() => void) }, prop: string, value) {
         target[prop] = value;
-        that.eventBus().emit(Block.EVENTS.FLOW_CDU);
+        that.eventBus().emit(View.EVENTS.FLOW_CDU);
         return true;
       }
     });
@@ -171,8 +174,12 @@ abstract class Block {
   _addEvents() {
     if ('events' in this.props) {
       const events = this.props.events || {};
+      if (!this?._element?.firstChild) {
+        return;
+      }
+      const element = this?._element?.firstChild;
       Object.keys(events).forEach((eventName: string) => {
-        this._element?.addEventListener(eventName, events[eventName]);
+        element.addEventListener(eventName, events[eventName]);
         if (('oldEvents' in this.props) && (this.props.oldEvents) && ('eventName' in this.props.oldEvents)) {
           this.props.oldEvents[eventName] = events[eventName];
         }
@@ -183,8 +190,12 @@ abstract class Block {
   _removeEvents() {
     if ('oldEvents' in this.props) {
       const events = this.props.oldEvents || {};
+      if (!this?._element?.firstChild) {
+        return;
+      }
+      const element = this?._element?.firstChild;
       Object.keys(events).forEach(eventName => {
-        this._element?.removeEventListener(eventName, events[eventName]);
+        element.removeEventListener(eventName, events[eventName]);
         if (('oldEvents' in this.props) && (this.props.oldEvents) && ('eventName' in this.props.oldEvents)) {
           delete this?.props?.oldEvents?.[eventName];
         }
@@ -207,6 +218,20 @@ abstract class Block {
       element.style.display = "none";
     }
   }
-}
 
-export default Block;
+  dispatchComponentDidUnMount() {
+    this._removeEvents();
+    this.eventBus().emit(View.EVENTS.FLOW_UNM);
+  }
+
+  _componentDidUnMount() {
+    this.componentDidUnMount();
+    Object.values(this.children).forEach(child => {
+      child.dispatchComponentDidMount();
+    });
+  }
+
+  componentDidUnMount() {
+    return true;
+  }
+}

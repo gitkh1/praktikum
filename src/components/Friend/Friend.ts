@@ -1,5 +1,5 @@
 import "./Friend.scss";
-import Block from "../../utils/Block";
+import Block from "../../utils/View";
 import Templator from "../../utils/templator";
 import { template } from "./Friend.tmpl";
 

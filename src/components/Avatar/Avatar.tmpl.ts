@@ -1,4 +1,6 @@
+import saver from "./saver.png";
+
 export const template =
   `<div class="{{labelClasses}}">
-    <img src="{{src}}" alt="{{alt}}">
+    <img src="{{${saver}}}" alt="{{alt}}">
   </div>`;

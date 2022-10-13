@@ -1,3 +1,4 @@
+import "../../Link/Link.scss";
 import {template as Link} from "../../Link/Link.tmpl";
 import "../../Link/Link.scss";
 

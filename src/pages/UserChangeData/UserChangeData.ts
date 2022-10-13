@@ -4,11 +4,12 @@ import "../../components/Avatar/Avatar.scss"
 import Title from "../../components/Title/Title";
 import LongField from "../../components/Fields/LongField/LongField";
 import Button from "../../components/Button/Button";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import { template } from "./UserChangeData.tmpl";
 import LabledInput from "../../components/Input/LabledInput/LabledInput";
+import formHandler from "../../utils/formHadler";
 
-class UserChangeData extends Block {
+class UserChangeData extends View {
   constructor(props: object) {
     super(props);
   }
@@ -107,6 +108,11 @@ const userchangedata = new UserChangeData({
   chatname: chatname,
   phone: phone,
   button: button,
+  events: {
+    submit: formHandler,
+    focusin: formHandler,
+    focusout: formHandler,
+  },
 });
 
 export { userchangedata };

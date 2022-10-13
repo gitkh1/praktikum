@@ -24,7 +24,9 @@ export const template =
         </div>
         <div class="{{user__name}}">{{Иван}}</div>
       </div>
-      <div class="{{chat__hamburger}}"></div>
+      <a class="{{chat__control}}" href="{{#userprofile}}">
+        <div class="{{chat__hamburger}}"></div>
+      </a>
     </div>
     <div class="{{chat__wrapper}}">
       <div class="{{chat__content}}">

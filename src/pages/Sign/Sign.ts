@@ -4,10 +4,11 @@ import Title from "../../components/Title/Title";
 import Button from "../../components/Button/Button";
 import ShortField from "../../components/Fields/ShortField/ShortField";
 import Link from "../../components/Link/Link";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import { template } from "./Sign.tmpl";
+import formHandler from "../../utils/formHadler";
 
-class Sign extends Block {
+class Sign extends View {
   constructor(props: object) {
     super(props);
   }
@@ -93,7 +94,7 @@ const button = new Button({
 
 const link = new Link({
   linkClasses: ['link', 'form__link', 'form__field'],
-  href: '#',
+  href: '#auth',
   description: 'Войти',
 })
 
@@ -109,6 +110,11 @@ const sign = new Sign({
   password2: password2,
   button: button,
   link: link,
+  events: {
+    submit: formHandler,
+    focusin: formHandler,
+    focusout: formHandler,
+  },
 });
 
 export { sign };

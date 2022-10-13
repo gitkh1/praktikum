@@ -5,11 +5,17 @@
 import isEmpty from "./isEmpty";
 
 type DOMElement = HTMLElement | DocumentFragment;
+
+// Тип MyObject используется для описания контекста шаблона. Пришлось для полей использовать any,
+// так как неизвестно, вернется объект, массив строк или строка. А строить многочисленные
+// проверки в других методах считаю ухудшат читабельность кода.
 type MyObject = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   propname?: any
 }
-class Templator {
+export default class Templator {
   _template!: string;
 
   elementsRegExp = {
@@ -228,5 +234,3 @@ class Templator {
     return fragment;
   }
 }
-
-export default Templator;

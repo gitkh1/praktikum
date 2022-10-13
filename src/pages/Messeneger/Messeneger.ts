@@ -1,12 +1,13 @@
 import Link from "../../components/Link/Link";
 import Input from "../../components/Input/Input";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import Friend from "../../components/Friend/Friend";
 import Message from "../../components/Message/Message";
 import NewMessage from "../../components/NewMessage/NewMessage";
 import { template } from "./Messeneger.tmpl";
+import formHandler from "../../utils/formHadler";
 
-class Messeneger extends Block {
+class Messeneger extends View {
   constructor(props: object) {
     super(props);
   }
@@ -19,7 +20,7 @@ class Messeneger extends Block {
 const link = new Link({
   linkClasses: ['link', 'link--grey'],
   description: 'Профиль',
-  href: '#',
+  href: '#userprofile',
 })
 
 const search = new Input({
@@ -62,7 +63,11 @@ const message1 = new Message({
   time: '21:45',
 })
 
-const newmessage = new NewMessage({})
+const newmessage = new NewMessage({
+  events: {
+    submit: formHandler,
+  },
+})
 
 const msg = new Messeneger({
   link: link,

@@ -4,10 +4,11 @@ import Title from "../../components/Title/Title";
 import Button from "../../components/Button/Button";
 import ShortField from "../../components/Fields/ShortField/ShortField";
 import Link from "../../components/Link/Link";
-import Block from "../../utils/Block";
+import View from "../../utils/View";
 import { template } from "./Auth.tmpl";
+import formHandler from "../../utils/formHadler";
 
-class Auth extends Block {
+class Auth extends View {
   constructor(props: object) {
     super(props);
   }
@@ -48,7 +49,7 @@ const button = new Button({
 
 const link = new Link({
   linkClasses: ['link', 'form__link', 'form__field'],
-  href: '#',
+  href: '#sign',
   description: 'Нет аккаунта?',
 })
 
@@ -59,6 +60,11 @@ const auth = new Auth({
   password: password,
   title: title,
   link: link,
+  events: {
+    submit: formHandler,
+    focusin: formHandler,
+    focusout: formHandler,
+  },
 });
 
 export { auth };

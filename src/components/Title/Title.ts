@@ -1,6 +1,6 @@
 import "./Title.scss";
 import { template } from "./Title.tmpl";
-import Block from "../../utils/Block";
+import Block from "../../utils/View";
 import Templator from "../../utils/templator";
 
 export default class Title extends Block {

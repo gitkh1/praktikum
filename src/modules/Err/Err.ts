@@ -1,7 +1,7 @@
 import "./Err.scss";
 import { template } from "./Err.tmpl";
 import Link from "../../components/Link/Link";
-import Block from "../../utils/Block";
+import Block from "../../utils/View";
 
 export class Err extends Block {
   constructor(props: object) {

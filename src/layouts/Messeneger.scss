@@ -62,6 +62,43 @@
     align-items: center;
   }
 
+  &__control {
+    width: 15px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__hamburger {
+    width: 4px;
+    height: 4px;
+    background: $grey;
+    border-radius: 50%;
+    position: relative;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: $grey;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 7px;
+    }
+
+    &::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: $grey;
+      border-radius: 50%;
+      position: absolute;
+      top: 7px;
+    }
+  }
+
 }
 
 .user {
