@@ -1,14 +1,13 @@
-import Button from "../Button/Button";
-import Input from "../Input/Input";
-import LabledInput from "../Input/LabledInput";
 import "./NewMessage.scss";
-import Scrap from "./scrap.svg";
+import { template } from "./NewMessage.tmpl";
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
+export default class NewMessage extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-const NewMessage = () =>
-  `<form action="#" class="chat__form new-msg">
-    ${LabledInput(['label__input'], ['label', 'new-msg__field', 'new-msg__field--srap'], 'file', Scrap)}
-    ${Input(['colored-input', 'new-msg__field', 'new-msg__field--msg'], 'text', 'newMsg', 'Поиск')}
-    ${Button('Отправить', 'submit', ['new-msg__field', 'new-msg__field--btn'])}
-  </form>`;
-
-export default NewMessage;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

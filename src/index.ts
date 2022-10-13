@@ -1,15 +1,15 @@
-import Templator from "./utils/templator";
-import Auth from "./pages/Auth";
-import ErrNotFound from "./pages/ErrNotFound";
+import "./layouts/normalize.scss";
 import "./layouts/Layout.scss";
-import UserProfile from "./pages/UserProfile";
-import UserChangeData from "./pages/UserChangeData";
-import UserChangePwd from "./pages/UserChangePwd";
-import Sign from "./pages/Sign";
-import Messeneger from "./pages/Messeneger";
+import "./layouts/Messeneger.scss";
 
-const root = document.querySelector('#root');
-if (root !== null) {
-  const newFragment = new Templator(Messeneger());
-  root.append(newFragment.compile({}));
-}
+import { render } from "./utils/renderDOM";
+import { auth } from "./pages/Auth/Auth";
+import { sign } from "./pages/Sign/Sign";
+import { userpwd } from "./pages/UserChangePwd/UserChangePwd";
+import { userprofile } from "./pages/UserProfile/UserProfile";
+import { userchangedata } from "./pages/UserChangeData/UserChangeData";
+import err404 from "./pages/ErrNotFound/ErrNotFound";
+import err500 from "./pages/ErrServer/ErrServer";
+import msg from "./pages/Messeneger/Messeneger";
+
+render("#root", msg);

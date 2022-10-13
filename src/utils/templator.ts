@@ -5,8 +5,12 @@
 import isEmpty from "./isEmpty";
 
 type DOMElement = HTMLElement | DocumentFragment;
+type MyObject = {
+  [key: string]: any
+  propname?: any
+}
 class Templator {
-  _template: string;
+  _template!: string;
 
   elementsRegExp = {
     element: /(<[^<\n]*>)|({{.*}})/gi,
@@ -20,6 +24,7 @@ class Templator {
     img: /(<img[^<\n]*>)/gm,
     button: /(<button[^<\n]*>)/gm,
     quotes: /"([^=<>\n]*)"/gm,
+    HTMLbrackets: /({{{.*}}})/gi
   }
   propsRegExp = {
     type: /type="([^=<>\n]*)"/gm,
@@ -27,14 +32,11 @@ class Templator {
     alt: /src="([^=<>\n]*)"/gm,
     href: /href="([^=<>\n]*)"/gm,
     name: /name="([^=<>\n]*)"/gm,
+    dataId: /data-id="([^=<>\n]*)"/gm,
     placeholder: /placeholder="([^=<>\n]*)"/gm
   }
 
-  constructor(template: string) {
-    this._template = template;
-  }
-
-  get(obj: object, path: string | undefined) {
+  get(obj: MyObject, path: string | undefined) {
     if (path === undefined) {
       return obj;
     }
@@ -63,35 +65,50 @@ class Templator {
       return 'loop open';
     } else if (description.match(this.elementsRegExp.loopClose)) {
       return 'loop close';
+    } else if (description.match(this.elementsRegExp.HTMLbrackets)) {
+      return 'element html brackets';
     } else {
       return 'element text';
     }
   }
 
-  setElementProps(description: string, element: HTMLElement) {
+  setElementProps(description: string, element: HTMLElement, ctx: object) {
     const firstMatch = 0;
 
     for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
-      const propValue = description?.match(regexp)?.[firstMatch]?.
-        match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(1, -1).trim();
-      if (!isEmpty(propValue)) {
-        element[prop] = propValue;
+      const propName = description?.match(regexp)?.[firstMatch]?.
+        match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(3, -3).trim();
+      const propValue = <string>this.get(ctx, propName);
+      if (!isEmpty(propName)) {
+        if (prop === 'dataId') {
+          element.dataset.id = <string>propValue;
+        } else {
+          element.setAttribute(prop, propValue);
+        }
       }
     }
   }
 
-  setElementClasses(description: string, element: HTMLElement) {
+  setElementClasses(description: string, element: HTMLElement, ctx: object) {
     const firstMatch = 0;
-    const classNames = description?.match(this.elementsRegExp.classes)?.[firstMatch]?.
-      match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(1, -1).trim().split(' ');
-
-    if ((classNames) && (!isEmpty(classNames))) {
+    const classes = description?.match(this.elementsRegExp.classes)?.[firstMatch]?.
+      match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(3, -3).trim();
+    let classNames;
+    if ((classes) && (classes.slice(0, 1) === `%`) && (classes.slice(-1) === `%`)) {
+      classNames = classes.slice(1, -1).split(' ');
+    } else {
+      classNames = this.get(ctx, classes);
+      if (!Array.isArray(classNames)) {
+        classNames = Array.of(classNames);
+      }
+    }
+    if ((classes) && (!isEmpty(classNames)) && (Array.isArray(classNames))) {
       classNames.filter((className: string) => !isEmpty(className)).
         forEach((className: string) => element.classList.add(className));
     }
   }
 
-  createElement(description: string): HTMLElement | null {
+  createElement(description: string, ctx: object): HTMLElement | null {
     const firstMatch = 0;
     const tagName = description?.match(this.elementsRegExp.tag)?.[firstMatch]?.slice(1).toLowerCase();
     if (!tagName) {
@@ -99,8 +116,8 @@ class Templator {
     }
 
     const newElement = document.createElement(tagName);
-    this.setElementClasses(description, newElement)
-    this.setElementProps(description, newElement);
+    this.setElementClasses(description, newElement, ctx)
+    this.setElementProps(description, newElement, ctx);
     return newElement;
   }
 
@@ -141,22 +158,24 @@ class Templator {
     const tagType = this.getTagType(match);
     let newElement: HTMLElement | null;
     let newTextContent: string;
+    let newDescr: string;
+    let newElementDescr: string;
 
     switch (tagType) {
       case 'element img':
-        newElement = this.createElement(match);
+        newElement = this.createElement(match, ctx);
         if (newElement) {
           cursorElement.append(newElement);
         }
         break;
       case 'element input':
-        newElement = this.createElement(match);
+        newElement = this.createElement(match, ctx);
         if (newElement) {
           cursorElement.append(newElement);
         }
         break;
       case 'element open':
-        newElement = this.createElement(match);
+        newElement = this.createElement(match, ctx);
         if (newElement) {
           cursorElement.append(newElement);
           cursorElement = newElement;
@@ -172,6 +191,11 @@ class Templator {
           cursorElement = cursorElement.parentNode;
         }
         break;
+      case 'element html brackets':
+        newDescr = match.slice(3, -3).trim();
+        newElementDescr = <string>this.get(ctx, newDescr);
+        this.routeElement(newElementDescr, ctx, cursorElement);
+        break;
       default:
         break;
     }
@@ -179,7 +203,8 @@ class Templator {
     return cursorElement;
   }
 
-  compile(ctx: object): DocumentFragment {
+  compile(template: string, ctx: object): DocumentFragment {
+    this._template = template;
     return this._compileTemplate(ctx);
   }
 

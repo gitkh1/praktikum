@@ -1,8 +1,14 @@
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
+import { template } from "./Avatar.tmpl";
 import "./Avatar.scss";
 
-const Avatar = (classesLabel: string[], src = '', alt = '') =>
-  `<div class="${classesLabel.join(' ')}">
-    <img src="${src}" alt="${alt}">
-  </div>`;
+export default class Avatar extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Avatar;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

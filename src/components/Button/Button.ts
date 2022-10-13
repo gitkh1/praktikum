@@ -1,6 +1,14 @@
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
+import { template } from "./Button.tmpl";
 import "./Button.scss";
 
-const Button = (description: string, type: string, classes: string[]) =>
-  `<button class="${classes.join(' ')}" type="${type}">${description}</button>`;
+export default class Button extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Button;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

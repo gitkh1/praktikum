@@ -1,11 +1,20 @@
-import Title from "../../components/Title/Title";
 import "./Err.scss";
+import { template } from "./Err.tmpl";
+import Link from "../../components/Link/Link";
+import Block from "../../utils/Block";
 
-const Err = (number: string, descr: string) =>
-  `<div class="error">
-    ${Title(['error__title'], number)}
-    <div class="error__descr">{{${descr}}}</div>
-    <a class="error__link link">{{Назад к чатам}}</a>
-  </div>`;
+export class Err extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Err;
+  render() {
+    return this.compile(template, this.props);
+  }
+}
+
+export const link = new Link({
+  linkClasses: ['error__link', 'link'],
+  href: '#',
+  description: 'Назад к чатам',
+})

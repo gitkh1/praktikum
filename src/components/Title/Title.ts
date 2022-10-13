@@ -1,6 +1,14 @@
 import "./Title.scss";
+import { template } from "./Title.tmpl";
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
 
-const Title = (classes: string[], description: string) =>
-  `<h1 class="${classes.join(' ')}">{{${description}}}</h1>`;
+export default class Title extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Title;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

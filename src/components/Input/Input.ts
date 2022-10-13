@@ -1,6 +1,14 @@
 import "./Input.scss";
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
+import { template } from "./Input.tmpl";
 
-const Input = (classes: string[], type: string, name: string, placeholder = "") =>
-  `<input class="${classes.join(' ')}" type="${type}" name="${name}" placeholder="${placeholder}">`;
+export default class Input extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Input;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

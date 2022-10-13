@@ -1,6 +1,14 @@
 import "./Link.scss";
+import { template } from "./Link.tmpl";
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
 
-const Link = (description: string, href: string, classes: string[]) =>
-  `<a class="${classes.join(' ')}" href="${href}">${description}</a>`;
+export default class Link extends Block {
+  constructor(props: object) {
+    super(props);
+  }
 
-export default Link;
+  render() {
+    return new Templator().compile(template, this.props);
+  }
+}

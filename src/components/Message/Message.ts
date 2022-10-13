@@ -1,9 +1,13 @@
 import "./Message.scss";
-
-const Message = (content: string, time: string) =>
-  `<div class="message">
-    <div class="message__content">{{${content}}}</div>
-    <time class="message__time">{{${time}}}</time>
-  </div>`;
-
-export default Message;
+import { template } from "./Message.tmpl";
+import Block from "../../utils/Block";
+import Templator from "../../utils/templator";
+  export default class Message extends Block {
+    constructor(props: object) {
+      super(props);
+    }
+  
+    render() {
+      return new Templator().compile(template, this.props);
+    }
+  }
