@@ -1,9 +1,14 @@
 import "./NewMessage.scss";
+
+import Templator from "../../utils/Templator";
+import View, { EventListeners } from "../../utils/View";
 import { template } from "./NewMessage.tmpl";
-import Block from "../../utils/View";
-import Templator from "../../utils/templator";
-export default class NewMessage extends Block {
-  constructor(props: object) {
+
+type NewMessageProps = {
+  events: EventListeners;
+}
+export default class NewMessage extends View<NewMessageProps> {
+  constructor(props: NewMessageProps) {
     super(props);
   }
 

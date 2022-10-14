@@ -1,9 +1,16 @@
 import "./Message.scss";
+
+import Templator from "../../utils/Templator";
+import View from "../../utils/View";
 import { template } from "./Message.tmpl";
-import Block from "../../utils/View";
-import Templator from "../../utils/templator";
-  export default class Message extends Block {
-    constructor(props: object) {
+
+type MessageProps = {
+  content: string;
+  time: string;
+}
+
+  export default class Message extends View<MessageProps> {
+    constructor(props: MessageProps) {
       super(props);
     }
   

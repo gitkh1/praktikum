@@ -1,10 +1,19 @@
 import "../Input.scss";
-import { template } from "./LabledInput.tmpl";
-import Block from "../../../utils/View";
-import Templator from "../../../utils/templator";
 
-export default class LabledInput extends Block {
-  constructor(props: object) {
+import Templator from "../../../utils/Templator";
+import View from "../../../utils/View";
+import { template } from "./LabledInput.tmpl";
+
+type LabledInputProps  = {
+  inputClasses: string[];
+  labelClasses: string[];
+  name: string;
+  src: string;
+  alt: string;
+}
+
+export default class LabledInput extends View<LabledInputProps> {
+  constructor(props: LabledInputProps) {
     super(props);
   }
 

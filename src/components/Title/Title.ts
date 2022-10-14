@@ -1,10 +1,16 @@
 import "./Title.scss";
-import { template } from "./Title.tmpl";
-import Block from "../../utils/View";
-import Templator from "../../utils/templator";
 
-export default class Title extends Block {
-  constructor(props: object) {
+import Templator from "../../utils/Templator";
+import View from "../../utils/View";
+import { template } from "./Title.tmpl";
+
+type TitleProps = {
+  titleClasses: string[];
+  description: string;
+}
+
+export default class Title extends View<TitleProps> {
+  constructor(props: TitleProps) {
     super(props);
   }
 

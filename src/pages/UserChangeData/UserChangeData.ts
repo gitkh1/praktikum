@@ -1,16 +1,30 @@
 import "../../layouts/Form.scss";
 import "../../components/Avatar/Avatar.scss"
 
-import Title from "../../components/Title/Title";
-import LongField from "../../components/Fields/LongField/LongField";
 import Button from "../../components/Button/Button";
-import View from "../../utils/View";
-import { template } from "./UserChangeData.tmpl";
+import LongField from "../../components/Fields/LongField/LongField";
 import LabledInput from "../../components/Input/LabledInput/LabledInput";
+import Title from "../../components/Title/Title";
 import formHandler from "../../utils/formHadler";
+import View, {EventListeners} from "../../utils/View";
+import { template } from "./UserChangeData.tmpl";
 
-class UserChangeData extends View {
-  constructor(props: object) {
+type UserChangeDataProps = {
+  formClasses: string[];
+  label: LabledInput;
+  title: Title;
+  email: LongField;
+  login: LongField;
+  firstname: LongField;
+  lastname: LongField;
+  chatname: LongField;
+  phone: LongField;
+  button: Button;
+  events: EventListeners;
+}
+
+class UserChangeData extends View<UserChangeDataProps> {
+  constructor(props: UserChangeDataProps) {
     super(props);
   }
 
@@ -24,6 +38,7 @@ const label = new LabledInput({
   labelClasses: ['label', 'avatar', 'form__avatar'],
   name: 'avatar',
   src: '#',
+  alt: 'Ваше фото',
 })
 
 const title = new Title({
@@ -109,9 +124,9 @@ const userchangedata = new UserChangeData({
   phone: phone,
   button: button,
   events: {
-    submit: formHandler,
-    focusin: formHandler,
-    focusout: formHandler,
+    submit: [formHandler, false],
+    focus:  [formHandler, true],
+    blur:  [formHandler, true],
   },
 });
 

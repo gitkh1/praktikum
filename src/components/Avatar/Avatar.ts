@@ -1,10 +1,17 @@
-import Block from "../../utils/View";
-import Templator from "../../utils/templator";
-import { template } from "./Avatar.tmpl";
 import "./Avatar.scss";
 
-export default class Avatar extends Block {
-  constructor(props: object) {
+import Templator from "../../utils/Templator";
+import View from "../../utils/View";
+import { template } from "./Avatar.tmpl";
+
+type AvatarProps = {
+  labelClasses: string[];
+  src: string;
+  alt: string;
+}
+
+export default class Avatar extends View<AvatarProps> {
+  constructor(props: AvatarProps) {
     super(props);
   }
 

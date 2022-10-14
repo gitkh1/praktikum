@@ -1,14 +1,22 @@
-import Link from "../../components/Link/Link";
 import Input from "../../components/Input/Input";
-import View from "../../utils/View";
-import Friend from "../../components/Friend/Friend";
-import Message from "../../components/Message/Message";
+import Link from "../../components/Link/Link";
 import NewMessage from "../../components/NewMessage/NewMessage";
-import { template } from "./Messeneger.tmpl";
+import myFriendsList, { FriendsList } from "../../modules/FriendsList/FriendsList";
+import myMessageList, { MessageList } from "../../modules/MessagesList/MessageList";
 import formHandler from "../../utils/formHadler";
+import View, { EventListeners } from "../../utils/View";
+import { template } from "./Messeneger.tmpl";
 
-class Messeneger extends View {
-  constructor(props: object) {
+type MessenegerProps = {
+  link: Link;
+  search: Input;
+  userList: FriendsList;
+  messageList: MessageList;
+  newmessage: NewMessage;
+}
+
+class Messeneger extends View<MessenegerProps> {
+  constructor(props: MessenegerProps) {
     super(props);
   }
 
@@ -30,53 +38,19 @@ const search = new Input({
   placeholder: 'Поиск',
 })
 
-const friend1 = new Friend({
-  chatname: 'Иван',
-  message: 'Привет',
-  time: '21:45',
-  unread: '2',
-})
-
-const friend2 = new Friend({
-  chatname: 'Петр',
-  message: 'Что нового?',
-  time: '20:00',
-  unread: '3',
-})
-
-const friend3 = new Friend({
-  chatname: 'Анастасия',
-  message: 'Пока!',
-  time: '19:00',
-  unread: '1',
-})
-
-const friend4 = new Friend({
-  chatname: 'Маша',
-  message: 'Целую!',
-  time: '18:00',
-  unread: '1',
-})
-
-const message1 = new Message({
-  content: 'Привет',
-  time: '21:45',
-})
-
 const newmessage = new NewMessage({
   events: {
-    submit: formHandler,
+    submit: [formHandler, false],
+    focus: [formHandler, true],
+    blur: [formHandler, true],
   },
 })
 
 const msg = new Messeneger({
   link: link,
   search: search,
-  friend1: friend1,
-  friend2: friend2,
-  friend3: friend3,
-  friend4: friend4,
-  message1: message1,
+  userList: myFriendsList,
+  messageList: myMessageList,
   newmessage: newmessage,
 })
 

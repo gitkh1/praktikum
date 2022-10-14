@@ -1,7 +1,8 @@
 /* eslint-disable no-useless-escape */
 // Simple template engine ((template, context) => DOM element)
-// Loop support {{%each}} -- {{/%each}}
-// Does not support loops within loops.
+// Поддержка циклов {{%each}} -- {{/%each}}
+// Временное решение шаблонизатора, в планах упростить код
+// и повысить его читабельность.
 import isEmpty from "./isEmpty";
 
 type DOMElement = HTMLElement | DocumentFragment;
@@ -12,7 +13,7 @@ type DOMElement = HTMLElement | DocumentFragment;
 type MyObject = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   propname?: any
 }
 export default class Templator {
@@ -22,7 +23,7 @@ export default class Templator {
     element: /(<[^<\n]*>)|({{.*}})/gi,
     open: /(<[^\/][^><\n]*>)/gm,
     close: /<\/[\w]*>/gi,
-    tag: /(<[^\/][0-9a-z]*)/gi,
+    tag: /((?<=<)[^\/][0-9a-z]*)/gi,
     classes: /class="([^=<>\n]*)"/gm,
     loopOpen: /({{%each.*}})/gi,
     loopClose: /({{\/%each}})/gi,
@@ -30,7 +31,8 @@ export default class Templator {
     img: /(<img[^<\n]*>)/gm,
     button: /(<button[^<\n]*>)/gm,
     quotes: /"([^=<>\n]*)"/gm,
-    HTMLbrackets: /({{{.*}}})/gi
+    HTMLbrackets: /({{{.*}}})/gi,
+    HTMLbracketsInLoop: /({{{!.*!}}})/gi
   }
   propsRegExp = {
     type: /type="([^=<>\n]*)"/gm,
@@ -42,7 +44,7 @@ export default class Templator {
     placeholder: /placeholder="([^=<>\n]*)"/gm
   }
 
-  get(obj: MyObject, path: string | undefined) {
+  private get(obj: MyObject, path: string | undefined) {
     if (path === undefined) {
       return obj;
     }
@@ -58,7 +60,7 @@ export default class Templator {
     return result ?? path;
   }
 
-  getTagType(description: string): string {
+  private getTagType(description: string): string {
     if (description.match(this.elementsRegExp.img)) {
       return 'element img';
     } else if (description.match(this.elementsRegExp.input)) {
@@ -71,6 +73,8 @@ export default class Templator {
       return 'loop open';
     } else if (description.match(this.elementsRegExp.loopClose)) {
       return 'loop close';
+    } else if (description.match(this.elementsRegExp.HTMLbracketsInLoop)) {
+      return 'element html bracketsInLoop';
     } else if (description.match(this.elementsRegExp.HTMLbrackets)) {
       return 'element html brackets';
     } else {
@@ -78,12 +82,23 @@ export default class Templator {
     }
   }
 
-  setElementProps(description: string, element: HTMLElement, ctx: object) {
+  private cutStringByMask(string: string, regExpMask: RegExp): string {
     const firstMatch = 0;
+    const stringByMask: string = string?.match(regExpMask)?.[firstMatch] || '';
+    return stringByMask;
+  }
 
+  private cutStringByMaskAndQuotes(string: string, regExpMask: RegExp): string {
+    const quotesLength = 3;
+    const stringByMask: string = this.cutStringByMask(string, regExpMask);
+    const stringByQuotes = this.cutStringByMask(stringByMask, this.elementsRegExp.quotes);
+    const stringWithoutQuotes: string = stringByQuotes.slice(quotesLength, -quotesLength).trim() || '';
+    return stringWithoutQuotes;
+  }
+
+  private setElementProps(description: string, element: HTMLElement, ctx: object) {
     for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
-      const propName = description?.match(regexp)?.[firstMatch]?.
-        match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(3, -3).trim();
+      const propName = this.cutStringByMaskAndQuotes(description, regexp);
       const propValue = <string>this.get(ctx, propName);
       if (!isEmpty(propName)) {
         if (prop === 'dataId') {
@@ -95,10 +110,8 @@ export default class Templator {
     }
   }
 
-  setElementClasses(description: string, element: HTMLElement, ctx: object) {
-    const firstMatch = 0;
-    const classes = description?.match(this.elementsRegExp.classes)?.[firstMatch]?.
-      match(this.elementsRegExp.quotes)?.[firstMatch]?.slice(3, -3).trim();
+  private setElementClasses(description: string, element: HTMLElement, ctx: object) {
+    const classes = this.cutStringByMaskAndQuotes(description, this.elementsRegExp.classes);
     let classNames;
     if ((classes) && (classes.slice(0, 1) === `%`) && (classes.slice(-1) === `%`)) {
       classNames = classes.slice(1, -1).split(' ');
@@ -114,9 +127,8 @@ export default class Templator {
     }
   }
 
-  createElement(description: string, ctx: object): HTMLElement | null {
-    const firstMatch = 0;
-    const tagName = description?.match(this.elementsRegExp.tag)?.[firstMatch]?.slice(1).toLowerCase();
+  private createElement(description: string, ctx: object): HTMLElement | null {
+    const tagName = this.cutStringByMask(description, this.elementsRegExp.tag).toLowerCase();
     if (!tagName) {
       return null;
     }
@@ -127,7 +139,7 @@ export default class Templator {
     return newElement;
   }
 
-  createTextContent(description: string, ctx: object): string {
+  private createTextContent(description: string, ctx: object): string {
     const textName = description.slice(2, -2).trim();
     const textContent = this.get(ctx, textName);
     if (typeof textContent !== 'string') {
@@ -136,31 +148,20 @@ export default class Templator {
     return textContent;
   }
 
-  createloopElement(match: string, matches: string[], i: number, ctx: object, cursorElement: DOMElement): [DOMElement, number] {
-    const firstMatch = 0;
-    const ctxName = match.match(this.elementsRegExp.loopOpen)?.[firstMatch]?.slice(7, -2).trim();
-    const thisCtx = this.get(ctx, ctxName);
+  private createloopElement(i: number, ctx: object, cursorElement: DOMElement): [DOMElement, number] {
     const loopFragment: DocumentFragment = document.createDocumentFragment();
-    let currentInLoopElement: DOMElement = loopFragment;
-
-    if (Array.isArray(thisCtx)) {
-      let j: number | undefined;
-      thisCtx.forEach((ctx: object) => {
-        j = i + 1;
-        let thisMatch = matches[j];
-        while (!this.getTagType(thisMatch).includes('loop close')) {
-          currentInLoopElement = this.routeElement(thisMatch, ctx, currentInLoopElement);
-          j++;
-          thisMatch = matches[j];
-        }
-      });
-      i = j || i;
-      cursorElement.append(loopFragment);
-    }
+    Object.values(ctx).forEach((description: string) => {
+      i++;
+      const newElement = this.createElement(description, {});
+      if (newElement) {
+        loopFragment.append(newElement);
+      }
+    });
+    cursorElement.append(loopFragment);
     return [cursorElement, i];
   }
 
-  routeElement(match: string, ctx: object, cursorElement: DOMElement): DOMElement {
+  private routeElement(match: string, ctx: object, cursorElement: DOMElement): DOMElement {
     const tagType = this.getTagType(match);
     let newElement: HTMLElement | null;
     let newTextContent: string;
@@ -202,6 +203,11 @@ export default class Templator {
         newElementDescr = <string>this.get(ctx, newDescr);
         this.routeElement(newElementDescr, ctx, cursorElement);
         break;
+      case 'element html bracketsInLoop':
+        newDescr = match.slice(4, -4).trim();
+        newElementDescr = <string>this.get(ctx, newDescr);
+        this.routeElement(newElementDescr, ctx, cursorElement);
+        break;
       default:
         break;
     }
@@ -211,10 +217,10 @@ export default class Templator {
 
   compile(template: string, ctx: object): DocumentFragment {
     this._template = template;
-    return this._compileTemplate(ctx);
+    return this.compileTemplate(ctx);
   }
 
-  _compileTemplate(ctx: object): DocumentFragment {
+  private compileTemplate(ctx: object): DocumentFragment {
     const fragment = document.createDocumentFragment();
     let currentElement: DOMElement = fragment;
 
@@ -226,7 +232,7 @@ export default class Templator {
         if (this.getTagType(match).includes('element')) {
           currentElement = this.routeElement(match, ctx, currentElement);
         } else if (this.getTagType(match).includes('loop open')) {
-          [currentElement, i] = this.createloopElement(match, matches, i, ctx, currentElement);
+          [currentElement, i] = this.createloopElement(i, ctx, currentElement);
         }
         i++;
       }

@@ -1,10 +1,17 @@
 import "./Link.scss";
-import { template } from "./Link.tmpl";
-import Block from "../../utils/View";
-import Templator from "../../utils/templator";
 
-export default class Link extends Block {
-  constructor(props: object) {
+import Templator from "../../utils/Templator";
+import View from "../../utils/View";
+import { template } from "./Link.tmpl";
+
+type LinkProps = {
+  linkClasses: string[];
+  href: string;
+  description: string;
+}
+
+export default class Link extends View<LinkProps> {
+  constructor(props: LinkProps) {
     super(props);
   }
 

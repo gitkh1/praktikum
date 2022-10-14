@@ -2,14 +2,30 @@ import "../../layouts/Form.scss";
 import "../../components/Avatar/Avatar.scss";
 
 import Avatar from "../../components/Avatar/Avatar";
-import Title from "../../components/Title/Title";
-import LongField from "../../components/Fields/LongField/LongField";
 import LinkField from "../../components/Fields/LinkField/LinkField";
+import LongField from "../../components/Fields/LongField/LongField";
+import Title from "../../components/Title/Title";
 import View from "../../utils/View";
 import { template } from "./UserProfile.tmpl";
 
-class UserProfile extends View {
-  constructor(props: object) {
+
+type UserProfileProps = {
+  formClasses: string[];
+  avatar: Avatar;
+  title: Title;
+  email: LinkField;
+  login: LongField;
+  firstname: LongField;
+  lastname: LongField;
+  chatname: LongField;
+  phone: LongField;
+  changedata: LinkField;
+  changepassword: LinkField;
+  out: LinkField;
+}
+
+class UserProfile extends View<UserProfileProps> {
+  constructor(props: UserProfileProps) {
     super(props);
   }
 
@@ -21,7 +37,7 @@ class UserProfile extends View {
 const avatar = new Avatar({
   labelClasses: ['label', 'avatar', 'form__avatar'],
   src: ' ',
-  alt: ' '
+  alt: 'Аватар пользователя'
 })
 
 const title = new Title({

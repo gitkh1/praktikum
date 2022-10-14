@@ -1,22 +1,12 @@
 import "../../layouts/Form.scss";
 
-import Title from "../../components/Title/Title";
 import Button from "../../components/Button/Button";
 import ShortField from "../../components/Fields/ShortField/ShortField";
 import Link from "../../components/Link/Link";
+import Title from "../../components/Title/Title";
+import formHandler from "../../utils/formHadler";
 import View from "../../utils/View";
 import { template } from "./Auth.tmpl";
-import formHandler from "../../utils/formHadler";
-
-class Auth extends View {
-  constructor(props: object) {
-    super(props);
-  }
-
-  render() {
-    return this.compile(template, this.props);
-  }
-}
 
 const title = new Title({
   titleClasses: ['form__title'],
@@ -53,18 +43,31 @@ const link = new Link({
   description: 'Нет аккаунта?',
 })
 
-const auth = new Auth({
-  formClasses: ['form', 'form--sign'],
-  button: button,
-  login: login,
-  password: password,
-  title: title,
-  link: link,
-  events: {
-    submit: formHandler,
-    focusin: formHandler,
-    focusout: formHandler,
-  },
-});
+class Auth extends View<object> {
+  // Auth расширяет View, но ничего не передает во View.
+  // Что нужно написать View<here> в определении класса View,
+  // чтобы передавать пропсы по желанию?
+  constructor() {
+    super({
+      formClasses: ['form', 'form--sign'],
+      button: button,
+      login: login,
+      password: password,
+      title: title,
+      link: link,
+      events: {
+        submit: [formHandler, false],
+        focus: [formHandler, true],
+        blur: [formHandler, true],
+      },
+    });
+  }
+
+  render() {
+    return this.compile(template, this.props);
+  }
+}
+
+const auth = new Auth();
 
 export { auth };

@@ -1,25 +1,24 @@
-import msg from "../pages/Messeneger/Messeneger";
 import { auth } from "../pages/Auth/Auth";
+import msg from "../pages/Messeneger/Messeneger";
 import { sign } from "../pages/Sign/Sign";
+import { userchangedata } from "../pages/UserChangeData/UserChangeData";
 import { userchangepwd } from "../pages/UserChangePwd/UserChangePwd";
 import { userprofile } from "../pages/UserProfile/UserProfile";
-import { userchangedata } from "../pages/UserChangeData/UserChangeData";
-import err404 from "../pages/ErrNotFound/ErrNotFound";
-import err500 from "../pages/ErrServer/ErrServer";
 import View from "./View";
 
+type AnyView = View<any>;
+// Правильно ли это? Хочу разрешить любой класс, который расширяет View.
+
 const root = document.querySelector('#root');
-const routes: { [key: string]: View } = {
+const routes: Record<string, AnyView> = {
   msg: msg,
   auth: auth,
   sign: sign,
   userchangepwd: userchangepwd,
   userprofile: userprofile,
   userchangedata: userchangedata,
-  err404: err404,
-  err500: err500,
 }
-let thisView: View;
+let lastView: AnyView;
 
 root?.addEventListener('click', (event) => {
   const target = <Element>event.target;
@@ -29,9 +28,10 @@ root?.addEventListener('click', (event) => {
   if ((href) && (href !== '')) {
     event.preventDefault();
     const view = routes[href];
-    thisView.dispatchComponentDidUnMount();
-    unrender();
-    thisView = view;
+    if (lastView) {
+      lastView.dispatchComponentDidUnMount();
+      unrender();
+    }
     render(view);
   }
 })
@@ -42,13 +42,11 @@ function unrender() {
   }
 }
 
-export function render(view: View) {
+export function render(view: AnyView) {
   if (root) {
-    thisView = view;
     root.append(<Node>view.getContent()?.firstChild);
-
     view.dispatchComponentDidMount();
-
+    lastView = view;
     return root;
   }
 }

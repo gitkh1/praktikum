@@ -1,53 +1,55 @@
+type Reg = {
+  regExp: RegExp[],
+  min: number,
+  max: number,
+}
+
+const regExps: Record<string, Reg> = {
+  ['password']: {
+    regExp: [/[А-ЯA-Z]/gm, /[0-9]/gm],
+    min: 8,
+    max: 40,
+  },
+  ['message']: {
+    regExp: [/./],
+    min: 1,
+    max: Infinity,
+  },
+  ['email']: {
+    regExp: [/[a-z0-9_-]*@[a-z0-9]+\.[a-z]{2,}/gmi],
+    min: 3,
+    max: Infinity,
+  },
+  ['phone']: {
+    regExp: [/[ +()\-0-9]/gm],
+    min: 1,
+    max: 20,
+  },
+  ['first_name']: {
+    regExp: [/[А-ЯA-Z][а-яА-Яa-zA-Z]*/gm],
+    min: 1,
+    max: Infinity,
+  },
+  ['second_name']: {
+    regExp: [/[А-ЯA-Z][а-яА-Яa-zA-Z]*/gm],
+    min: 1,
+    max: Infinity,
+  },
+  ['login']: {
+    regExp: [/[a-z0-9_-]*[a-z][a-z0-9_-]*/gmi],
+    min: 3,
+    max: 20,
+  },
+}
+
 function validateField(field: HTMLInputElement): boolean {
-  type Reg = {
-    r: RegExp[],
-    min: number,
-    max: number,
-  }
-  const regExp: { [key: string]: Reg } = {
-    password: {
-      r: [/[А-ЯA-Z]/gm, /[0-9]/gm],
-      min: 8,
-      max: 40,
-    },
-    message: {
-      r: [/./],
-      min: 1,
-      max: Infinity,
-    },
-    email: {
-      r: [/[a-z0-9_-]*@[a-z0-9]+\.[a-z]{2,}/gmi],
-      min: 3,
-      max: Infinity,
-    },
-    phone: {
-      r: [/[ +()\-0-9]/gm],
-      min: 1,
-      max: 20,
-    },
-    first_name: {
-      r: [/[А-ЯA-Z][а-яА-Яa-zA-Z]*/gm],
-      min: 1,
-      max: Infinity,
-    },
-    second_name: {
-      r: [/[А-ЯA-Z][а-яА-Яa-zA-Z]*/gm],
-      min: 1,
-      max: Infinity,
-    },
-    login: {
-      r: [/[a-z0-9_-]*[a-z][a-z0-9_-]*/gmi],
-      min: 3,
-      max: 20,
-    },
-  }
   const name = field.name;
   let result = true;
-  if (name in regExp) {
+  if (name in regExps) {
     const value = field.value;
-    const minLength = regExp[name].min;
-    const maxLength = regExp[name].min;
-    regExp[name].r.forEach(req => {
+    const minLength = regExps[name].min;
+    const maxLength = regExps[name].min;
+    regExps[name].regExp.forEach(req => {
       result = result && req.test(field.value);
     });
     result = result && (value.length <= maxLength) && (value.length >= minLength)

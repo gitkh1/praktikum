@@ -1,15 +1,30 @@
 import "../../layouts/Form.scss";
 
-import Title from "../../components/Title/Title";
 import Button from "../../components/Button/Button";
 import ShortField from "../../components/Fields/ShortField/ShortField";
 import Link from "../../components/Link/Link";
-import View from "../../utils/View";
-import { template } from "./Sign.tmpl";
+import Title from "../../components/Title/Title";
 import formHandler from "../../utils/formHadler";
+import View, {EventListeners} from "../../utils/View";
+import { template } from "./Sign.tmpl";
 
-class Sign extends View {
-  constructor(props: object) {
+type SignProps = {
+  formClasses: string[];
+  title: Title;
+  email: ShortField;
+  firstname: ShortField;
+  lastname: ShortField;
+  phone: ShortField;
+  login: ShortField;
+  password: ShortField;
+  password2: ShortField;
+  button: Button;
+  link: Link;
+  events: EventListeners;
+}
+
+class Sign extends View<SignProps> {
+  constructor(props: SignProps) {
     super(props);
   }
 
@@ -111,9 +126,9 @@ const sign = new Sign({
   button: button,
   link: link,
   events: {
-    submit: formHandler,
-    focusin: formHandler,
-    focusout: formHandler,
+    submit: [formHandler, false],
+    focus: [formHandler, true],
+    blur: [formHandler, true],
   },
 });
 

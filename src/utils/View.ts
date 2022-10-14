@@ -1,57 +1,56 @@
 //Based class View of MVC
-
 import EventBus from "./EventBus";
-import Templator from "./templator";
+import Templator from "./Templator";
 
-export default abstract class View {
-  private eventBus: () => EventBus;
+type EventCallback = [(event: Event) => void, boolean?];
+type EventHandler = Record<string, EventCallback>;
+type OwnProps = Record<string, object | object[] | string | string[]> & { events?: EventHandler };
+export type EventListeners = Record<'submit' | 'focus' | 'blur', EventCallback>
+// focus и blur не всплывают, а обработчики я ставлю на всю форму,
+// поэтому будем ловить эти события на погружении
+export default abstract class View<Props extends object> {
   static EVENTS = {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
     FLOW_CDU: "flow:component-did-update",
     FLOW_RENDER: "flow:render",
-    FLOW_UNM: "flow:component-did-unmount"
+    FLOW_UNM: "flow:component-did-unmount",
+    FLOW_RME: "flow:component-remove-events",
   };
 
-  _element: null | Element = null;
-  _tagName = "";
-  _id: null | string;
-  props: {
-    target?: { [key: string]: string | (() => void) },
-    oldEvents?: { [key: string]: () => void },
-    events?: { [key: string]: () => void },
-  } | object;
-  children: object = {};
+  private eventBus: () => EventBus;
+  private element: null | Element = null;
+  private tagName: string;
+  private id: string;
+  private children: Record<string, View<Props>> = {};
+  protected props: OwnProps = {
+  };
 
-  constructor(propsAndChildren = {}) {
-    const tagName = "div"
-
-    const { children, props } = this._getChildren(propsAndChildren);
+  constructor(propsAndChildren: Props, tagName = 'div') {
+    const { children, props } = this.getChildren(propsAndChildren);
     this.children = children;
-
-    this._tagName = tagName;
-
-    this._id = Math.trunc(Math.random() * (10 ** 9)).toString();
-    this.props = this._makePropsProxy(props);
+    this.tagName = tagName;
+    this.id = Math.trunc(Math.random() * (10 ** 9)).toString();
+    this.props = this.makePropsProxy(props);
 
     const eventBus = new EventBus();
     this.eventBus = () => eventBus;
-    this._registerEvents(eventBus);
+    this.registerEvents(eventBus);
     eventBus.emit(View.EVENTS.INIT);
   }
 
-  _registerEvents(eventBus: EventBus) {
+  private registerEvents(eventBus: EventBus) {
     eventBus.on(View.EVENTS.INIT, this.init.bind(this));
-    eventBus.on(View.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-    eventBus.on(View.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
-    eventBus.on(View.EVENTS.FLOW_RENDER, this._render.bind(this));
-    eventBus.on(View.EVENTS.FLOW_UNM, this._componentDidUnMount.bind(this));
+    eventBus.on(View.EVENTS.FLOW_CDM, this.componentDidMountPrivate.bind(this));
+    eventBus.on(View.EVENTS.FLOW_CDU, this.componentDidUpdatePrivate.bind(this));
+    eventBus.on(View.EVENTS.FLOW_RENDER, this.renderPrivate.bind(this));
+    eventBus.on(View.EVENTS.FLOW_UNM, this.componentDidUnMountPrivate.bind(this));
+    eventBus.on(View.EVENTS.FLOW_RME, this.removeEvents.bind(this));
   }
 
-  _getChildren(propsAndChildren: object) {
-    const children: { [key: string]: object | string | string[] } = {};
-    const props: { [key: string]: object | string | string[] } = {};
-
+  private getChildren(propsAndChildren: object) {
+    const children: Record<string, View<Props>> = {};
+    const props: OwnProps = {};
     Object.entries(propsAndChildren).forEach(([key, value]: [string, object | string | string[]]) => {
       if (value instanceof View) {
         children[key] = value;
@@ -62,22 +61,22 @@ export default abstract class View {
     return { children, props };
   }
 
-  _createResources() {
-    if (this._tagName) {
-      const tagName = this._tagName;
-      this._element = this._createDocumentElement(tagName);
-      if (this._id) {
-        this._element.setAttribute('data-id', this._id);
+  private createResources() {
+    if (this.tagName) {
+      const tagName = this.tagName;
+      this.element = this.createDocumentElement(tagName);
+      if (this.id) {
+        this.element.setAttribute('data-id', this.id);
       }
     }
   }
 
   init() {
-    this._createResources();
+    this.createResources();
     this.eventBus().emit(View.EVENTS.FLOW_RENDER);
   }
 
-  _componentDidMount() {
+  private componentDidMountPrivate() {
     this.componentDidMount();
     Object.values(this.children).forEach(child => {
       child.dispatchComponentDidMount();
@@ -92,7 +91,7 @@ export default abstract class View {
     this.eventBus().emit(View.EVENTS.FLOW_CDM);
   }
 
-  _componentDidUpdate() {
+  private componentDidUpdatePrivate() {
     const response: boolean = this.componentDidUpdate();
     if (response) {
       this.eventBus().emit(View.EVENTS.FLOW_RENDER);
@@ -103,27 +102,29 @@ export default abstract class View {
     return true;
   }
 
-  setProps = (nextProps: object) => {
+  setProps = (nextProps: OwnProps) => {
     if (!nextProps) {
       return;
+    }
+    //Вначале удаляем существующие события
+    if ('events' in nextProps) {
+      this.eventBus().emit(View.EVENTS.FLOW_RME);
     }
     Object.assign(this.props, nextProps);
   };
 
-  _render() {
+  private renderPrivate() {
     const View = this.render();
 
-    this._removeEvents();
-
-    if (this._element) {
-      this._element.innerHTML = '';
+    if (this.element) {
+      this.element.innerHTML = '';
     }
 
     if (View) {
-      this._element?.append(View);
+      this.element?.append(View);
     }
 
-    this._addEvents();
+    this.addEvents();
   }
 
   render(): Node | null {
@@ -131,20 +132,20 @@ export default abstract class View {
   }
 
   compile(template: string, props: object) {
-    const propsAndStubs: { [key: string]: string } = { ...props };
+    const propsAndStubs: Record<string, string> = { ...props };
 
     Object.entries(this.children).forEach(([key, child]) => {
-      propsAndStubs[key] = `<div data-id="${child._id}"></div>`
+      propsAndStubs[key] = `<div data-id="${child.id}"></div>`
     });
 
-    const fragment = this._createDocumentElement('div');
-
+    const fragment = this.createDocumentElement('div');
     fragment.append((new Templator).compile(template, propsAndStubs));
 
     Object.values(this.children).forEach(child => {
-      const stub = fragment.querySelector(`[data-id="${child._id.slice(2, -2)}"]`);
-      if (stub) {
-        stub.replaceWith(child.getContent().firstChild);
+      const stub = fragment.querySelector(`[data-id="${child.id.slice(2, -2)}"]`);
+      const newElement = child?.getContent()?.firstChild;
+      if ((stub) && (newElement)) {
+        stub.replaceWith(newElement);
       }
     });
 
@@ -152,58 +153,52 @@ export default abstract class View {
   }
 
   getContent(): Node | null {
-    return this._element;
+    return this.element;
   }
 
-  _makePropsProxy = (props: object) => {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const that = this;
-    return new Proxy(props, {
-      get(target: { [key: string]: object | string | string[] }, prop: string) {
-        const value = target[prop];
-        return typeof value === "function" ? value.bind(target) : value;
-      },
-      set(target: { [key: string]: string | (() => void) }, prop: string, value) {
-        target[prop] = value;
-        that.eventBus().emit(View.EVENTS.FLOW_CDU);
-        return true;
-      }
-    });
-  }
+  private makePropsProxy = (props: OwnProps) => new Proxy(props, {
+    get: (target: OwnProps, prop: string) => {
+      const value = target[prop];
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+    set: (target: OwnProps, prop: string, value) => {
+      target[prop] = value;
+      this.eventBus().emit(View.EVENTS.FLOW_CDU);
+      return true;
+    }
+  });
 
-  _addEvents() {
-    if ('events' in this.props) {
-      const events = this.props.events || {};
-      if (!this?._element?.firstChild) {
+  private addEvents() {
+    if ((this) && (this.props) && ('events' in this.props)) {
+      const events = this?.props?.events || {};
+      if (!this?.element?.firstChild) {
         return;
       }
-      const element = this?._element?.firstChild;
+      const element = this?.element?.firstChild;
       Object.keys(events).forEach((eventName: string) => {
-        element.addEventListener(eventName, events[eventName]);
-        if (('oldEvents' in this.props) && (this.props.oldEvents) && ('eventName' in this.props.oldEvents)) {
-          this.props.oldEvents[eventName] = events[eventName];
-        }
+        const handler = events[eventName][0];
+        const isCapture = events[eventName][1] || false;
+        element.addEventListener(eventName, handler, isCapture);
       });
     }
   }
 
-  _removeEvents() {
-    if ('oldEvents' in this.props) {
-      const events = this.props.oldEvents || {};
-      if (!this?._element?.firstChild) {
+  private removeEvents() {
+    if ('events' in this.props) {
+      const events = this?.props?.events || {};
+      if (!this?.element?.firstChild) {
         return;
       }
-      const element = this?._element?.firstChild;
+      const element = this?.element?.firstChild;
       Object.keys(events).forEach(eventName => {
-        element.removeEventListener(eventName, events[eventName]);
-        if (('oldEvents' in this.props) && (this.props.oldEvents) && ('eventName' in this.props.oldEvents)) {
-          delete this?.props?.oldEvents?.[eventName];
-        }
+        const handler = events[eventName][0];
+        const isCapture = events[eventName][1] || false;
+        element.removeEventListener(eventName, handler, isCapture);
       });
     }
   }
 
-  _createDocumentElement(tagName: string) {
+  private createDocumentElement(tagName: string) {
     return document.createElement(tagName);
   }
 
@@ -220,14 +215,14 @@ export default abstract class View {
   }
 
   dispatchComponentDidUnMount() {
-    this._removeEvents();
     this.eventBus().emit(View.EVENTS.FLOW_UNM);
   }
 
-  _componentDidUnMount() {
+  private componentDidUnMountPrivate() {
     this.componentDidUnMount();
+    this.eventBus().emit(View.EVENTS.FLOW_RME);
     Object.values(this.children).forEach(child => {
-      child.dispatchComponentDidMount();
+      child.dispatchComponentDidUnMount();
     });
   }
 

@@ -9,12 +9,12 @@ const METHODS = {
   DELETE: 'DELETE'
 };
 const defaultTimeOut = 5000;
-type dataObject = {
+type DataObject = {
   headers: object,
   data: object,
   timeout?: number,
 }
-const defaultData: dataObject = {
+const defaultData: DataObject = {
   headers: {},
   data: {},
   timeout: defaultTimeOut,
@@ -28,23 +28,23 @@ type requestObject = {
 }
 
 export class HTTPTransport {
-  get = (url: string, options: dataObject = defaultData) => {
+  get = (url: string, options: DataObject = defaultData) => {
     let newUrl = url;
     newUrl += queryStringify(options.data);
-    return this.request(newUrl, { headers: options.headers, method: METHODS.GET, data: {} }, options.timeout);
+    return this.request(newUrl, { headers: options.headers, method: METHODS.GET, data: {} });
   };
-  put = (url: string, options: dataObject = defaultData) => {
-    return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
+  put = (url: string, options: DataObject = defaultData) => {
+    return this.request(url, { ...options, method: METHODS.PUT });
   };
-  post = (url: string, options: dataObject = defaultData) => {
-    return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
+  post = (url: string, options: DataObject = defaultData) => {
+    return this.request(url, { ...options, method: METHODS.POST });
   };
-  delete = (url: string, options: dataObject = defaultData) => {
-    return this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
+  delete = (url: string, options: DataObject = defaultData) => {
+    return this.request(url, { ...options, method: METHODS.DELETE });
   };
 
-  request = ((url: string, options: requestObject, timeout = defaultTimeOut) => {
-    const { method, headers, data } = options;
+  request = ((url: string, options: requestObject) => {
+    const { method, headers, data, timeout = defaultTimeOut } = options;
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -76,7 +76,7 @@ export function fetchWithRetry(url: string, options: requestObject) {
   const max = options.retries || 1;
   let i = 0;
 
-  function makeReq():unknown {
+  function makeReq(): unknown {
     const req = new HTTPTransport().request(url, options);
     if (i < max) {
       i++;

@@ -1,10 +1,17 @@
-import Block from "../../../utils/View";
-import Templator from "../../../utils/templator";
-import { template } from "./LinkField.tmpl";
 import "../Fields.scss";
 
-export default class LinkField extends Block {
-  constructor(props: object) {
+import Templator from "../../../utils/Templator";
+import View from "../../../utils/View";
+import { template } from "./LinkField.tmpl";
+
+type LinkFieldProps = {
+  fieldClasses: string[];
+  description: string;
+  href: string;
+  linkClasses: string[];
+}
+export default class LinkField extends View<LinkFieldProps> {
+  constructor(props: LinkFieldProps) {
     super(props);
   }
 

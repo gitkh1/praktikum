@@ -1,19 +1,16 @@
-import validateForm from "./validation";
 import sendData from "./Model";
+import validateForm from "./validation";
 
-function prepareData(form: HTMLFormElement): boolean {
+function collectInputsValues(form: HTMLFormElement): object {
+  let data: object = {};
   if (!form?.elements) {
-    return false;
+    return {};
   }
   const elements = form.querySelectorAll('input');
-  let data = {};
   elements.forEach(element => {
     data = { ...data, [element.name]: element.value }
   })
-  if (sendData(data)) {
-    return true;
-  }
-  return false;
+  return data;
 }
 
 export default function formHandler(event: Event): void {
@@ -24,7 +21,8 @@ export default function formHandler(event: Event): void {
     throw new Error('Форма не найдена');
   }
   if (validateForm(form)) {
-    prepareData(form);
+    const data:object = collectInputsValues(form);
+    sendData(data);
     form.reset();
   }
 }
