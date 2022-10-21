@@ -1,0 +1,153 @@
+@import "./Consts.scss";
+
+.chat {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+
+
+  &__menu {
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+  }
+
+  &__wrapper {
+    background-color: $background-dark;
+    flex: 1;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+
+  &__content:hover {
+    overflow-y: auto;
+  }
+
+  &__new-message {
+    height: 55px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  &__form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+  }
+
+  &__btn {
+    text-transform: none;
+  }
+
+  &__friend {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__control {
+    width: 15px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__hamburger {
+    width: 4px;
+    height: 4px;
+    background: $grey;
+    border-radius: 50%;
+    position: relative;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: $grey;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 7px;
+    }
+
+    &::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: $grey;
+      border-radius: 50%;
+      position: absolute;
+      top: 7px;
+    }
+  }
+
+}
+
+.user {
+
+  &__avatar {
+    width: 35px;
+    height: 35px;
+    background: $light-grey;
+    margin-right: 10px;
+  }
+
+  &__name {
+    color: $light-grey;
+  }
+}
+
+
+.friends {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+  background: $background-mid;
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 10px 0px;
+  }
+
+  &__profile {
+    align-self: flex-end;
+
+    &::after {
+      content: '>';
+      margin-left: 5px;
+    }
+  }
+
+  &__search {
+    margin-top: 20px;
+  }
+
+  &__list {
+    list-style-type: none;
+    flex: 1;
+    padding-top: 30px;
+  }
+}

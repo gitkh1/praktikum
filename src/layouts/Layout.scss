@@ -20,11 +20,19 @@ button {
   width: 100vw;
   height: 100vh;
   background-color: $background-dark;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: $baseFontSize;
   color: $grey;
   display: flex;
   justify-content: center;
-  font-size: $baseFontSize;
-  font-family: 'Alegreya Sans', sans-serif;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  background-color: $background-dark;
+  display: flex;
+  justify-content: center;
 }
 
 .label {

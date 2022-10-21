@@ -5,6 +5,8 @@
 ## Технологиии, которые будут использованы в проекте
 
 - Языки JavaScript и TypeScript
+- Компонентный подход
+- EventBus
 - CSS и PostCSS
 - Netlify
 - Heroku
@@ -33,3 +35,4 @@
 ## Pull requests
 
 Sprint 1 https://github.com/gitkh1/praktikum/pull/1
+Sprint 2 https://github.com/gitkh1/praktikum/pull/1

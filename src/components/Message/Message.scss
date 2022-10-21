@@ -6,53 +6,45 @@
   font-size: 14px;
   margin-bottom: 4px;
   max-width: 50%;
-}
 
-.message:last-child {
-  margin-bottom: 0;
-}
+  &:last-child {
+    margin-bottom: 0;
+  }
 
-.message--another {
-  align-self: flex-start;
-}
+  &--another {
+    align-self: flex-start;
+  }
 
-.message__content {
-  color: $light-grey;
-  background-color: $background-light;
-  padding: 9px 60px 9px 11px;
-  border-radius: 5px;
-}
+  &__content {
+    color: $light-grey;
+    background-color: $background-light;
+    padding: 9px 60px 9px 11px;
+    border-radius: 5px;
+  }
 
-.message__time {
-  position: absolute;
-  color: $grey;
-  right: 10px;
-  bottom: 4px;
-}
+  &__time {
+    position: absolute;
+    color: $grey;
+    right: 10px;
+    bottom: 4px;
+  }
 
-.message__name {
-  color: #5387C1;
-  margin-bottom: 4px;
-}
+  &__name {
+    color: #5387C1;
+    margin-bottom: 4px;
+  }
 
-.message__tick--another {
-  right: auto;
-  left: -12px;
-  border: 8px solid transparent;
-  border-bottom: 8px solid #2B5279;
-  border-right: 8px solid #2B5279;
-}
+  &__img {
+    position: absolute;
+    right: -50px;
+    bottom: 4px;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    object-fit: cover;
 
-.message__img {
-  position: absolute;
-  right: -50px;
-  bottom: 4px;
-  border-radius: 50%;
-  width: 33px;
-  height: 33px;
-  object-fit: cover;
-}
-
-.message__img--another {
-  left: -50px;
+    &--another {
+      left: -50px;
+    }
+  }
 }
