@@ -8,16 +8,16 @@ const METHODS = {
   PUT: 'PUT',
   DELETE: 'DELETE'
 };
-const defaultTimeOut = 5000;
+const DEFAULT_TIMEOUT = 5000;
 type DataObject = {
   headers: object,
   data: object,
   timeout?: number,
 }
-const defaultData: DataObject = {
+const DEFAULT_DATA: DataObject = {
   headers: {},
   data: {},
-  timeout: defaultTimeOut,
+  timeout: DEFAULT_TIMEOUT,
 }
 type requestObject = {
   headers: object,
@@ -28,23 +28,23 @@ type requestObject = {
 }
 
 export class HTTPTransport {
-  get = (url: string, options: DataObject = defaultData) => {
+  get = (url: string, options: DataObject = DEFAULT_DATA) => {
     let newUrl = url;
     newUrl += queryStringify(options.data);
     return this.request(newUrl, { headers: options.headers, method: METHODS.GET, data: {} });
   };
-  put = (url: string, options: DataObject = defaultData) => {
+  put = (url: string, options: DataObject = DEFAULT_DATA) => {
     return this.request(url, { ...options, method: METHODS.PUT });
   };
-  post = (url: string, options: DataObject = defaultData) => {
+  post = (url: string, options: DataObject = DEFAULT_DATA) => {
     return this.request(url, { ...options, method: METHODS.POST });
   };
-  delete = (url: string, options: DataObject = defaultData) => {
+  delete = (url: string, options: DataObject = DEFAULT_DATA) => {
     return this.request(url, { ...options, method: METHODS.DELETE });
   };
 
   request = ((url: string, options: requestObject) => {
-    const { method, headers, data, timeout = defaultTimeOut } = options;
+    const { method, headers, data, timeout = DEFAULT_TIMEOUT } = options;
 
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();

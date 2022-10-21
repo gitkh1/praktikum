@@ -7,7 +7,6 @@ import { userprofile } from "../pages/UserProfile/UserProfile";
 import View from "./View";
 
 type AnyView = View<any>;
-// Правильно ли это? Хочу разрешить любой класс, который расширяет View.
 
 const root = document.querySelector('#root');
 const routes: Record<string, AnyView> = {

@@ -1,6 +1,5 @@
 {
   "name": "messeneger",
-  "version": "1.0.0",
   "description": "Веб-приложение Чат",
   "default": "index.ts",
   "engines": {

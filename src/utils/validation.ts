@@ -4,7 +4,7 @@ type Reg = {
   max: number,
 }
 
-const regExps: Record<string, Reg> = {
+const REG_EXPS: Record<string, Reg> = {
   ['password']: {
     regExp: [/[А-ЯA-Z]/gm, /[0-9]/gm],
     min: 8,
@@ -45,11 +45,11 @@ const regExps: Record<string, Reg> = {
 function validateField(field: HTMLInputElement): boolean {
   const name = field.name;
   let result = true;
-  if (name in regExps) {
+  if (name in REG_EXPS) {
     const value = field.value;
-    const minLength = regExps[name].min;
-    const maxLength = regExps[name].min;
-    regExps[name].regExp.forEach(req => {
+    const minLength = REG_EXPS[name].min;
+    const maxLength = REG_EXPS[name].min;
+    REG_EXPS[name].regExp.forEach(req => {
       result = result && req.test(field.value);
     });
     result = result && (value.length <= maxLength) && (value.length >= minLength)

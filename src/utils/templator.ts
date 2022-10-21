@@ -7,9 +7,6 @@ import isEmpty from "./isEmpty";
 
 type DOMElement = HTMLElement | DocumentFragment;
 
-// Тип MyObject используется для описания контекста шаблона. Пришлось для полей использовать any,
-// так как неизвестно, вернется объект, массив строк или строка. А строить многочисленные
-// проверки в других методах считаю ухудшат читабельность кода.
 type MyObject = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
@@ -83,16 +80,16 @@ export default class Templator {
   }
 
   private cutStringByMask(string: string, regExpMask: RegExp): string {
-    const firstMatch = 0;
-    const stringByMask: string = string?.match(regExpMask)?.[firstMatch] || '';
+    const FIRST_MATCH = 0;
+    const stringByMask: string = string?.match(regExpMask)?.[FIRST_MATCH] || '';
     return stringByMask;
   }
 
   private cutStringByMaskAndQuotes(string: string, regExpMask: RegExp): string {
-    const quotesLength = 3;
+    const QUOTES_LENGTH = 3;
     const stringByMask: string = this.cutStringByMask(string, regExpMask);
     const stringByQuotes = this.cutStringByMask(stringByMask, this.elementsRegExp.quotes);
-    const stringWithoutQuotes: string = stringByQuotes.slice(quotesLength, -quotesLength).trim() || '';
+    const stringWithoutQuotes: string = stringByQuotes.slice(QUOTES_LENGTH, -QUOTES_LENGTH).trim() || '';
     return stringWithoutQuotes;
   }
 
