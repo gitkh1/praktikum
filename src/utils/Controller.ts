@@ -1,51 +1,21 @@
-import { auth } from "../pages/Auth/Auth";
-import msg from "../pages/Messeneger/Messeneger";
-import { sign } from "../pages/Sign/Sign";
-import { userchangedata } from "../pages/UserChangeData/UserChangeData";
-import { userchangepwd } from "../pages/UserChangePwd/UserChangePwd";
-import { userprofile } from "../pages/UserProfile/UserProfile";
-import View from "./View";
+import auth from '../pages/Auth/Auth';
+import messenger from '../pages/Messeneger/Messenger';
+import sign from '../pages/Sign/Sign';
+import userchangedata from '../pages/UserChangeData/UserChangeData';
+import userchangepwd from '../pages/UserChangePwd/UserChangePwd';
+import userprofile from '../pages/UserProfile/UserProfile';
+import PATHS from './Paths';
+import Router from './Router';
 
-type AnyView = View<any>;
+const router = new Router('#root');
 
-const root = document.querySelector('#root');
-const routes: Record<string, AnyView> = {
-  msg: msg,
-  auth: auth,
-  sign: sign,
-  userchangepwd: userchangepwd,
-  userprofile: userprofile,
-  userchangedata: userchangedata,
-}
-let lastView: AnyView;
+router
+  .use(auth, PATHS.auth)
+  .use(messenger, PATHS.messenger)
+  .use(sign, PATHS.sign)
+  .use(userprofile, PATHS.userprofile)
+  .use(userchangepwd, PATHS.userchangepwd)
+  .use(userchangedata, PATHS.userchangedata);
 
-root?.addEventListener('click', (event) => {
-  const target = <Element>event.target;
-  const regExp = /\/#.*/gm;
-  const firstMatch = 0;
-  const href = target.closest('a')?.href?.match(regExp)?.[firstMatch].slice(2);
-  if ((href) && (href !== '')) {
-    event.preventDefault();
-    const view = routes[href];
-    if (lastView) {
-      lastView.dispatchComponentDidUnMount();
-      unrender();
-    }
-    render(view);
-  }
-})
-
-function unrender() {
-  if (root?.firstChild) {
-    root.removeChild(root.firstChild);
-  }
-}
-
-export function render(view: AnyView) {
-  if (root) {
-    root.append(<Node>view.getContent()?.firstChild);
-    view.dispatchComponentDidMount();
-    lastView = view;
-    return root;
-  }
-}
+export { PATHS };
+export default router;

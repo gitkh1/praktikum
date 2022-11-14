@@ -1,7 +1,7 @@
 import "./Message.scss";
 
+import Block from "../../utils/Block";
 import Templator from "../../utils/Templator";
-import View from "../../utils/View";
 import { template } from "./Message.tmpl";
 
 type MessageProps = {
@@ -9,7 +9,7 @@ type MessageProps = {
   time: string;
 }
 
-  export default class Message extends View<MessageProps> {
+  export default class Message extends Block<MessageProps> {
     constructor(props: MessageProps) {
       super(props);
     }

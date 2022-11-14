@@ -1,7 +1,7 @@
 import "./Friend.scss";
 
+import Block from "../../utils/Block";
 import Templator from "../../utils/Templator";
-import View from "../../utils/View";
 import { template } from "./Friend.tmpl";
 
 type FriendProps = {
@@ -10,7 +10,7 @@ type FriendProps = {
   time: string;
   unread: string;
 }
-export default class Friend extends View<FriendProps> {
+export default class Friend extends Block<FriendProps> {
   constructor(props: FriendProps) {
     super(props);
   }

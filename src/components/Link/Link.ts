@@ -1,7 +1,7 @@
 import "./Link.scss";
 
+import Block from "../../utils/Block";
 import Templator from "../../utils/Templator";
-import View from "../../utils/View";
 import { template } from "./Link.tmpl";
 
 type LinkProps = {
@@ -10,7 +10,7 @@ type LinkProps = {
   description: string;
 }
 
-export default class Link extends View<LinkProps> {
+export default class Link extends Block<LinkProps> {
   constructor(props: LinkProps) {
     super(props);
   }

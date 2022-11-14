@@ -1,5 +1,5 @@
 export const template =
-  `<label class="{{labelClasses}}">
+  `<label class="{{%label avatar form__avatar%}}">
     <img src="{{src}}" alt="{{alt}}">
-    <input class="{{inputClasses}}" type="{{file}}" name="{{name}}">
+    <input class="{{%label__input%}}" type="{{%file%}}" name="{{name}}">
   </label>`;

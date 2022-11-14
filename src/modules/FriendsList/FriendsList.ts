@@ -1,12 +1,10 @@
 import Friend from "../../components/Friend/Friend";
-import View from "../../utils/View";
+import Block from "../../utils/Block";
 import { template } from "./FriendsList.tnpl";
 
 type FriendListProps = Friend[];
 
-// Список друзей слева, динамически будут добавляться друзья,
-// для удобства выделен в отдельный модуль как и лента переписки
-export class FriendsList extends View<FriendListProps> {
+export class FriendsList extends Block<FriendListProps> {
   constructor(props: FriendListProps) {
     super(props);
   }

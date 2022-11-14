@@ -1,10 +1,10 @@
 import Message from "../../components/Message/Message";
-import View from "../../utils/View";
+import Block from "../../utils/Block";
 import { template } from "./MessageList.tmpl";
 
 type MessageListProps = Message[];
 
-export class MessageList extends View<MessageListProps> {
+export class MessageList extends Block<MessageListProps> {
   constructor(props: MessageListProps) {
     super(props);
   }

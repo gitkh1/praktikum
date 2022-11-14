@@ -1,17 +1,22 @@
-import "./Button.scss";
+import './Button.scss';
 
-import Templator from "../../utils/Templator";
-import View from "../../utils/View";
-import { template } from "./Button.tmpl";
+import Block from '../../utils/Block';
+import Templator from '../../utils/Templator';
+import { template } from './Button.tmpl';
 
 type ButtonProps = {
-  classNames: string[];
+  classNames?: string[];
   description: string;
-  type: string;
-}
-export default class Button extends View<ButtonProps> {
+};
+
+const DEFAULT_BUTTON_CLASSES = ['btn', 'form__btn'];
+
+export default class Button extends Block<ButtonProps> {
   constructor(props: ButtonProps) {
-    super(props);
+    super({
+      ...props,
+      classNames: props.classNames || DEFAULT_BUTTON_CLASSES,
+    });
   }
 
   render() {

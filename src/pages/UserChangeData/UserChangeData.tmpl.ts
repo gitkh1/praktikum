@@ -1,5 +1,4 @@
-export const template =
-  `<form class="{{formClasses}}">
+export const template = `<form class="{{%form form--user%}}">
     {{{ label }}}
     {{{ title }}}
     {{{ email }}}

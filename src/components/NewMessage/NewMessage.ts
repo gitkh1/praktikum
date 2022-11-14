@@ -1,15 +1,15 @@
-import "./NewMessage.scss";
+import './NewMessage.scss';
 
-import Templator from "../../utils/Templator";
-import View, { EventListeners } from "../../utils/View";
-import { template } from "./NewMessage.tmpl";
+import Block from '../../utils/Block';
+import defaultEvents from '../../utils/formHadler';
+import Templator from '../../utils/Templator';
+import { template } from './NewMessage.tmpl';
 
-type NewMessageProps = {
-  events: EventListeners;
-}
-export default class NewMessage extends View<NewMessageProps> {
-  constructor(props: NewMessageProps) {
-    super(props);
+export default class NewMessage extends Block<object> {
+  constructor() {
+    super({
+      events: defaultEvents,
+    });
   }
 
   render() {

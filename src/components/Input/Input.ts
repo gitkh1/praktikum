@@ -1,7 +1,7 @@
 import "./Input.scss";
 
+import Block from "../../utils/Block";
 import Templator from "../../utils/Templator";
-import View from "../../utils/View";
 import { template } from "./Input.tmpl";
 
 type InputProps = {
@@ -11,7 +11,7 @@ type InputProps = {
   placeholder: string;
 }
 
-export default class Input extends View<InputProps> {
+export default class Input extends Block<InputProps> {
   constructor(props: InputProps) {
     super(props);
   }
