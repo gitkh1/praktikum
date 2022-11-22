@@ -10,7 +10,27 @@ const REG_EXPS: Record<string, Reg> = {
     min: 8,
     max: 40,
   },
+  ['oldPassword']: {
+    regExp: [/[А-ЯA-Z]/gm, /[0-9]/gm],
+    min: 8,
+    max: 40,
+  },
+  ['newPassword']: {
+    regExp: [/[А-ЯA-Z]/gm, /[0-9]/gm],
+    min: 8,
+    max: 40,
+  },
+  ['newPassword2']: {
+    regExp: [/[А-ЯA-Z]/gm, /[0-9]/gm],
+    min: 8,
+    max: 40,
+  },
   ['message']: {
+    regExp: [/.*/],
+    min: 1,
+    max: Infinity,
+  },
+  ['title']: {
     regExp: [/.*/],
     min: 1,
     max: Infinity,
@@ -30,7 +50,7 @@ const REG_EXPS: Record<string, Reg> = {
     min: 1,
     max: 40,
   },
-  ['last_name']: {
+  ['second_name']: {
     regExp: [/[А-ЯA-Z][а-яА-Яa-zA-Z]*/gm],
     min: 1,
     max: 40,
@@ -41,7 +61,7 @@ const REG_EXPS: Record<string, Reg> = {
     max: 40,
   },
   ['login']: {
-    regExp: [/[a-z0-9_-]*[a-z][a-z0-9_-]*/gim],
+    regExp: [/[a-zA-Z-_]+/gm, /[a-zA-Z-_0-9]*/gm],
     min: 3,
     max: 20,
   },
@@ -51,15 +71,60 @@ const IVALID_CLASSNAME = 'input-invalid';
 
 function validateField(field: HTMLInputElement): boolean {
   const name = field.name;
-  let result = true;
   if (name in REG_EXPS) {
     const value = field.value;
-    const minLength = REG_EXPS[name].min;
-    const maxLength = REG_EXPS[name].max;
     REG_EXPS[name].regExp.forEach((req) => {
-      result = result && req.test(field.value);
+      if (!req.test(value)) {
+        return false;
+      }
     });
-    result = result && value.length <= maxLength && value.length >= minLength;
+    if (value.length > REG_EXPS[name].max) {
+      return false;
+    }
+    if (value.length < REG_EXPS[name].min) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function validatePasswordForm(form: HTMLFormElement): boolean {
+  const oldPassword = form.elements[0] as HTMLInputElement;
+  const newPassword = form.elements[1] as HTMLInputElement;
+  const newPassword2 = form.elements[2] as HTMLInputElement;
+  const result =
+    oldPassword.value !== newPassword.value &&
+    newPassword.value === newPassword2.value;
+
+  for (const element of Array.from([oldPassword, newPassword, newPassword2])) {
+    if (!result) {
+      element.classList.add(IVALID_CLASSNAME);
+    } else if (element.classList.contains(IVALID_CLASSNAME)) {
+      element.classList.remove(IVALID_CLASSNAME);
+    }
+  }
+  return result;
+}
+
+export function validateSignUpPasswordForm(form: HTMLFormElement): boolean {
+  const newPassword = form.querySelector('[name=password]') as HTMLInputElement;
+  const newPassword2 = form.querySelector(
+    '[name=password2]'
+  ) as HTMLInputElement;
+  if (!newPassword) {
+    return true;
+  }
+  if (!newPassword2) {
+    return true;
+  }
+  const result = newPassword.value === newPassword2.value;
+
+  for (const element of Array.from([newPassword, newPassword2])) {
+    if (!result) {
+      element.classList.add(IVALID_CLASSNAME);
+    } else if (element.classList.contains(IVALID_CLASSNAME)) {
+      element.classList.remove(IVALID_CLASSNAME);
+    }
   }
   return result;
 }

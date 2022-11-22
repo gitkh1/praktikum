@@ -2,9 +2,9 @@ import './Err.scss';
 
 import Link from '../../components/Link/Link';
 import Title from '../../components/Title/Title';
+import PATHS from '../../controllers/Paths';
 import Block from '../../utils/Block';
-import PATHS from '../../utils/Paths';
-import { template } from './Err.tmpl';
+import template from './Err.tmpl';
 
 type ErrProps = {
   link: Link;
@@ -14,7 +14,7 @@ type ErrProps = {
 
 class Err extends Block<ErrProps> {
   constructor(props: ErrProps) {
-    super(props);
+    super(props, 'root__inner');
   }
 
   render() {
@@ -31,7 +31,7 @@ const link = new Link({
   linkClasses: ['error__link', 'link'],
   href: PATHS.messenger,
   description: 'Назад к чатам',
-});
+}, 'errLink');
 
 const err = new Err({
   link: link,

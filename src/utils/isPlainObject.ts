@@ -1,6 +1,4 @@
-type PlainObject<T = unknown> = {
-  [k in string]: T;
-};
+import PlainObject from '../types/PlainObject';
 
 function isPlainObject(value: unknown): value is PlainObject {
   return (
@@ -11,5 +9,4 @@ function isPlainObject(value: unknown): value is PlainObject {
   );
 }
 
-export { PlainObject };
 export default isPlainObject;

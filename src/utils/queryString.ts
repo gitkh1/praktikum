@@ -1,19 +1,7 @@
+import PlainObject from '../types/PlainObject';
 import isPlainObject from './isPlainObject';
-import { PlainObject } from './isPlainObject';
 
-type StringIndexed = Record<string, unknown>;
-
-const obj: StringIndexed = {
-  key: 1,
-  key2: 'test',
-  key3: false,
-  key4: true,
-  key5: [1, 2, 3],
-  key6: { a: 1 },
-  key7: { b: { d: 2 } },
-};
-
-function queryStringify(data: StringIndexed): string | never {
+function queryStringify(data: PlainObject): string | never {
   const values: string[] = [];
 
   if (!isPlainObject(data)) {
@@ -61,9 +49,4 @@ function queryStringify(data: StringIndexed): string | never {
   return values.join('&');
 }
 
-const obj1 = { a: [1, 2, 3], c: 2 };
-queryStringify(obj1);
-
 export default queryStringify;
-
-queryStringify(obj); // 'key=1&key2=test&key3=false&key4=true&key5[0]=1&key5[1]=2&key5[2]=3&key6[a]=1&key7[b][d]=2'

@@ -4,10 +4,10 @@ import Button from '../../components/Button/Button';
 import ShortField from '../../components/Fields/ShortField/ShortField';
 import Link from '../../components/Link/Link';
 import Title from '../../components/Title/Title';
+import { formHandlers } from '../../controllers/FormsController';
+import PATHS from '../../controllers/Paths';
 import Block from '../../utils/Block';
-import defaultEvents from '../../utils/formHadler';
-import PATHS from '../../utils/Paths';
-import { template } from './Sign.tmpl';
+import template from './Sign.tmpl';
 
 const title = new Title({
   description: 'Регистрация',
@@ -33,7 +33,7 @@ const firstname = new ShortField({
 
 const lastname = new ShortField({
   description: 'Фамилия',
-  name: 'last_name',
+  name: 'second_name',
   type: 'text',
 });
 
@@ -51,36 +51,45 @@ const password = new ShortField({
 
 const password2 = new ShortField({
   description: 'Пароль (еще раз)',
-  name: 'password',
+  name: 'password2',
   type: 'password',
 });
 
-const button = new Button({
-  description: 'Зарегистрироваться',
-  classNames: ['btn', 'form__btn', 'form__field'],
-});
+const button = new Button(
+  {
+    description: 'Зарегистрироваться',
+    classNames: ['btn', 'form__btn'],
+  },
+  'form__field'
+);
 
-const link = new Link({
-  linkClasses: ['link', 'form__link', 'form__field'],
-  href: PATHS.auth,
-  description: 'Войти',
-});
+const link = new Link(
+  {
+    linkClasses: ['link'],
+    href: PATHS.auth,
+    description: 'Войти',
+  },
+  'form__link'
+);
 
 class Sign extends Block<object> {
   constructor() {
-    super({
-      title,
-      email,
-      firstname,
-      lastname,
-      phone,
-      login,
-      password,
-      password2,
-      button,
-      link,
-      events: defaultEvents,
-    });
+    super(
+      {
+        title,
+        email,
+        firstname,
+        lastname,
+        phone,
+        login,
+        password,
+        password2,
+        button,
+        link,
+        events: formHandlers,
+      },
+      'root__inner'
+    );
   }
 
   render() {

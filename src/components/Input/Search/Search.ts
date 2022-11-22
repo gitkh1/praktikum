@@ -1,12 +1,13 @@
 import '../Input.scss';
 
+import { searchHandler } from '../../../controllers/FormsController';
 import Block from '../../../utils/Block';
 import Templator from '../../../utils/Templator';
-import { template } from './Search.tmpl';
+import template from './Search.tmpl';
 
 export default class Search extends Block<object> {
   constructor() {
-    super({});
+    super({ events: searchHandler }, 'friends__search');
   }
 
   render() {

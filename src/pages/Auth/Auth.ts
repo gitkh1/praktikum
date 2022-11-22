@@ -4,10 +4,10 @@ import Button from '../../components/Button/Button';
 import ShortField from '../../components/Fields/ShortField/ShortField';
 import Link from '../../components/Link/Link';
 import Title from '../../components/Title/Title';
+import { formHandlers } from '../../controllers/FormsController';
+import PATHS from '../../controllers/Paths';
 import Block from '../../utils/Block';
-import defaultEvents from '../../utils/formHadler';
-import PATHS from '../../utils/Paths';
-import { template } from './Auth.tmpl';
+import template from './Auth.tmpl';
 
 const title = new Title({
   description: 'Вход',
@@ -25,27 +25,36 @@ const password = new ShortField({
   type: 'password',
 });
 
-const button = new Button({
-  description: 'Войти',
-  classNames: ['btn', 'form__btn', 'form__field'],
-});
+const button = new Button(
+  {
+    description: 'Войти',
+    classNames: ['btn', 'form__btn'],
+  },
+  'form__field'
+);
 
-const link = new Link({
-  linkClasses: ['link', 'form__link', 'form__field'],
-  href: PATHS.sign,
-  description: 'Нет аккаунта?',
-});
+const link = new Link(
+  {
+    linkClasses: ['link'],
+    href: PATHS.sign,
+    description: 'Нет аккаунта?',
+  },
+  'form__link'
+);
 
 class Auth extends Block<object> {
   constructor() {
-    super({
-      button,
-      login,
-      password,
-      title,
-      link,
-      events: defaultEvents,
-    });
+    super(
+      {
+        button,
+        login,
+        password,
+        title,
+        link,
+        events: formHandlers,
+      },
+      'root__inner'
+    );
   }
 
   render() {

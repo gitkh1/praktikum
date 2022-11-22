@@ -1,13 +1,12 @@
+import { EventCallback } from '../types/Events';
+import PlainObject from '../types/PlainObject';
 import EventBus from './EventBus';
 import Templator from './Templator';
 
-type EventCallback = [(event: Event) => void, boolean?];
-type EventHandler = Record<string, EventCallback>;
-type OwnProps = Record<string, object | object[] | string | string[]> & {
-  events?: EventHandler;
-};
+type OwnProps = PlainObject;
 
-export type EventListeners = Record<'submit' | 'focus' | 'blur', EventCallback>;
+const CONTAINER_TAGNAME = 'div';
+
 export default abstract class Block<Props extends object> {
   static EVENTS = {
     INIT: 'init',
@@ -19,19 +18,21 @@ export default abstract class Block<Props extends object> {
   };
 
   private eventBus: () => EventBus;
-  private element: null | Element = null;
-  private tagName: string;
+  private element: Element;
   private id: string;
+  private rootClass: string;
+  private tagName: string;
   private children: Record<string, Block<Props>> = {};
   protected props: OwnProps = {};
 
-  constructor(propsAndChildren: Props, tagName = 'div') {
+  constructor(propsAndChildren: Props, rootClass?: string, tagName?: string) {
     const { children, props } = this.getChildren(propsAndChildren);
     this.children = children;
-    this.tagName = tagName;
     this.id = Math.trunc(Math.random() * 10 ** 9).toString();
-    this.props = this.makePropsProxy(props);
-    //здесь нужно еще запроксировать children
+    this.props = props;
+    this.rootClass = rootClass || '';
+    this.tagName = tagName || CONTAINER_TAGNAME;
+    this.element = document.createElement(this.tagName);
 
     const eventBus = new EventBus();
     this.eventBus = () => eventBus;
@@ -41,7 +42,10 @@ export default abstract class Block<Props extends object> {
 
   private registerEvents(eventBus: EventBus) {
     eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
-    eventBus.on(Block.EVENTS.FLOW_CDM, this.componentDidMountPrivate.bind(this));
+    eventBus.on(
+      Block.EVENTS.FLOW_CDM,
+      this.componentDidMountPrivate.bind(this)
+    );
     eventBus.on(
       Block.EVENTS.FLOW_CDU,
       this.componentDidUpdatePrivate.bind(this)
@@ -70,18 +74,23 @@ export default abstract class Block<Props extends object> {
   }
 
   private createResources() {
-    if (this.tagName) {
-      const tagName = this.tagName;
-      this.element = this.createDocumentElement(tagName);
-      if (this.id) {
-        this.element.setAttribute('data-id', this.id);
-      }
+    if (!this.id) {
+      return;
+    }
+    if (this.rootClass) {
+      this.element.classList.add(this.rootClass);
+    } else {
+      this.setElemAttr('data-id', this.id);
     }
   }
 
   init() {
     this.createResources();
     this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+  }
+
+  setElemAttr(key: string, value: string) {
+    this.element.setAttribute(key, value);
   }
 
   private componentDidMountPrivate() {
@@ -92,6 +101,7 @@ export default abstract class Block<Props extends object> {
   }
 
   componentDidMount() {
+    this.renderPrivate();
     return true;
   }
 
@@ -107,9 +117,6 @@ export default abstract class Block<Props extends object> {
   }
 
   componentDidUpdate() {
-    // Здесь нужно проверять старые и новые пропсы, в этом случае - перерендер
-    // Не забудь настроить makeProxy, чтобы рендер не был прикаждом свойстве, а скопом
-    // Например json stringify, потом хэшировать
     return true;
   }
 
@@ -121,15 +128,22 @@ export default abstract class Block<Props extends object> {
       this.eventBus().emit(Block.EVENTS.FLOW_RME);
     }
     Object.assign(this.props, nextProps);
+    this.eventBus().emit(Block.EVENTS.FLOW_CDU);
+  };
+
+  setChildren = (nexChildren: object) => {
+    const { children } = this.getChildren(nexChildren);
+    this.children = children;
+    this.eventBus().emit(Block.EVENTS.FLOW_CDU);
   };
 
   private renderPrivate() {
-    const Block = this.render();
+    const block = this.render();
     if (this.element) {
       this.element.innerHTML = '';
     }
-    if (Block) {
-      this.element?.append(Block);
+    if (block) {
+      this.element?.append(block);
     }
     this.addEvents();
   }
@@ -152,7 +166,7 @@ export default abstract class Block<Props extends object> {
       const stub = fragment.querySelector(
         `[data-id="${child.id.slice(2, -2)}"]`
       );
-      const newElement = child?.getContent()?.firstChild;
+      const newElement = child?.getContent();
       if (stub && newElement) {
         stub.replaceWith(newElement);
       }
@@ -161,33 +175,25 @@ export default abstract class Block<Props extends object> {
     return fragment.firstChild;
   }
 
-  getContent(): Node | null {
+  getContent(): Node {
     return this.element;
   }
 
-  private makePropsProxy = (props: OwnProps) =>
-    new Proxy(props, {
-      get: (target: OwnProps, prop: string) => {
-        const value = target[prop];
-        return typeof value === 'function' ? value.bind(target) : value;
-      },
-      set: (target: OwnProps, prop: string, value) => {
-        target[prop] = value;
-        this.eventBus().emit(Block.EVENTS.FLOW_CDU);
-        return true;
-      },
-    });
-
   private addEvents() {
     if (this && this.props && 'events' in this.props) {
-      const events = this?.props?.events || {};
       if (!this?.element?.firstChild) {
         return;
       }
+      if (!this?.props?.events) {
+        return;
+      }
+
       const element = this?.element?.firstChild;
+      const events = this?.props?.events as PlainObject;
       Object.keys(events).forEach((eventName: string) => {
-        const handler = events[eventName][0];
-        const isCapture = events[eventName][1] || false;
+        const event = events[eventName] as EventCallback;
+        const handler = event[0];
+        const isCapture = event[1];
         element.addEventListener(eventName, handler, isCapture);
       });
     }
@@ -195,14 +201,18 @@ export default abstract class Block<Props extends object> {
 
   private removeEvents() {
     if ('events' in this.props) {
-      const events = this?.props?.events || {};
       if (!this?.element?.firstChild) {
         return;
       }
+      if (!this?.props?.events) {
+        return;
+      }
       const element = this?.element?.firstChild;
+      const events = this?.props?.events as PlainObject;
       Object.keys(events).forEach((eventName) => {
-        const handler = events[eventName][0];
-        const isCapture = events[eventName][1] || false;
+        const event = events[eventName] as EventCallback;
+        const handler = event[0];
+        const isCapture = event[1] || false;
         element.removeEventListener(eventName, handler, isCapture);
       });
     }

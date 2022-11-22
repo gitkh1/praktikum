@@ -1,9 +1,5 @@
-import "../../Link/Link.scss";
-import "../../Link/Link.scss";
-
-import {template as Link} from "../../Link/Link.tmpl";
-
-export const template =
-  `<div class="{{%form__field field field--long%}}">
-    ${Link}
+const template = `<div class="{{%field field--long%}}">
+  <a class="{{linkClasses}}" href="{{href}}">{{description}}</a>
   </div>`;
+
+export default template;

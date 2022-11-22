@@ -1,8 +1,9 @@
+import '../../Input/Input.scss';
 import '../Fields.scss';
 
 import Block from '../../../utils/Block';
 import Templator from '../../../utils/Templator';
-import { template } from './ShortField.tmpl';
+import template from './ShortField.tmpl';
 
 type ShortFieldProps = {
   description: string;
@@ -11,7 +12,7 @@ type ShortFieldProps = {
 };
 export default class ShortField extends Block<ShortFieldProps> {
   constructor(props: ShortFieldProps) {
-    super(props);
+    super(props, 'form__field');
   }
 
   render() {

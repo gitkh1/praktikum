@@ -1,59 +1,67 @@
-function queryStringify(data: object) {
-  return `?` + Object.entries(data).map(([key, value]) => `${key}=${value}`).join('&');
-}
+import Data from '../types/Data';
+import queryStringify from './queryString';
 
 const METHODS = {
   GET: 'GET',
   POST: 'POST',
   PUT: 'PUT',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
 };
+
+const HEADERS = [
+  ['Content-Type', 'application/json'],
+  ['Access-Control-Allow-Origin', '*'],
+  [
+    'Content-Security-Policy',
+    'default-src https: unsafe-eval unsafe-inline; object-src none',
+  ],
+];
+
+const HOST_URL = 'https://ya-praktikum.tech/api/v2';
+export const HOST_RESOURCES = HOST_URL + '/resources';
+
 const DEFAULT_TIMEOUT = 5000;
-type DataObject = {
-  headers: object,
-  data: object,
-  timeout?: number,
-}
-const DEFAULT_DATA: DataObject = {
-  headers: {},
-  data: {},
-  timeout: DEFAULT_TIMEOUT,
-}
-type requestObject = {
-  headers: object,
-  data: object,
-  method: string,
-  timeout?: number,
-  retries?: number,
-}
 
-export class HTTPTransport {
-  get = (url: string, options: DataObject = DEFAULT_DATA) => {
-    let newUrl = url;
-    newUrl += queryStringify(options.data);
-    return this.request(newUrl, { headers: options.headers, method: METHODS.GET, data: {} });
-  };
-  put = (url: string, options: DataObject = DEFAULT_DATA) => {
-    return this.request(url, { ...options, method: METHODS.PUT });
-  };
-  post = (url: string, options: DataObject = DEFAULT_DATA) => {
-    return this.request(url, { ...options, method: METHODS.POST });
-  };
-  delete = (url: string, options: DataObject = DEFAULT_DATA) => {
-    return this.request(url, { ...options, method: METHODS.DELETE });
+type CRUDMethod = (extraUrl: string, data: Data) => Promise<unknown>;
+
+export default class HTTPTransport {
+  private url: string;
+  constructor(url: string) {
+    this.url = HOST_URL + url;
+  }
+
+  get: CRUDMethod = (extraUrl, data) => {
+    const newUrl = this.url + extraUrl + queryStringify(data);
+    return this.request(newUrl, METHODS.GET, {});
   };
 
-  request = ((url: string, options: requestObject) => {
-    const { method, headers, data, timeout = DEFAULT_TIMEOUT } = options;
+  put: CRUDMethod = (extraUrl, data) => {
+    return this.request(this.url + extraUrl, METHODS.PUT, data);
+  };
 
+  post: CRUDMethod = (extraUrl, data) => {
+    return this.request(this.url + extraUrl, METHODS.POST, data);
+  };
+
+  delete: CRUDMethod = (extraUrl, data) => {
+    return this.request(this.url + extraUrl, METHODS.DELETE, data);
+  };
+
+  putFile = (extraUrl: string, data: FormData) => {
+    return this.requestFile(this.url + extraUrl, METHODS.PUT, data);
+  };
+
+  request = (url: string, method: string, data: Data) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(method, url);
-      if (headers) {
-        const [key, value] = Object.entries(headers)[0];
+
+      HEADERS.forEach((header) => {
+        const [key, value] = header;
         xhr.setRequestHeader(key, value);
-      }
-      xhr.timeout = timeout;
+      });
+      xhr.withCredentials = true;
+      xhr.timeout = DEFAULT_TIMEOUT;
 
       xhr.onload = function () {
         resolve(xhr);
@@ -69,21 +77,25 @@ export class HTTPTransport {
         xhr.send(JSON.stringify(data));
       }
     });
-  });
-}
+  };
 
-export function fetchWithRetry(url: string, options: requestObject) {
-  const max = options.retries || 1;
-  let i = 0;
+  requestFile = (url: string, method: string, data: FormData) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(method, url);
 
-  function makeReq(): unknown {
-    const req = new HTTPTransport().request(url, options);
-    if (i < max) {
-      i++;
-      return req.catch(makeReq);
-    }
-    throw new Error('лимит');
-  }
+      xhr.withCredentials = true;
+      xhr.timeout = DEFAULT_TIMEOUT;
 
-  return makeReq();
+      xhr.onload = function () {
+        resolve(xhr);
+      };
+
+      xhr.onabort = reject;
+      xhr.onerror = reject;
+      xhr.ontimeout = reject;
+
+      xhr.send(data);
+    });
+  };
 }

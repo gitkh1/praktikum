@@ -53,9 +53,3 @@ function cloneDeep<T extends object = object>(obj: T) {
 }
 
 export default cloneDeep;
-
-const objects = [1, 2, { a: null }];
-const deep = cloneDeep(objects);
-
-console.log(deep === objects); // => false
-console.log(deep);

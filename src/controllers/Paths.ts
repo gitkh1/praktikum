@@ -5,6 +5,9 @@ const PATHS = {
   userprofile: '/settings',
   userchangedata: '/settings/data',
   userchangepwd: '/settings/pwd',
+  err: '/404',
 };
+
+export const ERR_PAGE_PATH = PATHS.err;
 
 export default PATHS;

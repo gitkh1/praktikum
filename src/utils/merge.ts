@@ -1,8 +1,22 @@
 import isPlainObject from './isPlainObject';
 
-type Indexed<T = unknown> = {
+export type Indexed<T = unknown> = {
   [key: string]: T;
 };
+
+export function mergeDeep(target: Indexed, source: Indexed): Indexed {
+  if (isPlainObject(target) && isPlainObject(source)) {
+    for (const key in source) {
+      if (isPlainObject(source[key])) {
+        if (!target[key]) target[key] = {};
+        mergeDeep(target[key] as Indexed, source[key] as Indexed);
+      } else {
+        target[key] = source[key];
+      }
+    }
+  }
+  return target;
+}
 
 function merge(lhs: Indexed, rhs: Indexed): Indexed {
   function mergeDeep(target: Indexed, ...sources: Indexed[]): Indexed {
@@ -30,16 +44,3 @@ function merge(lhs: Indexed, rhs: Indexed): Indexed {
 }
 
 export default merge;
-
-merge({ a: { b: { a: 2 } }, d: 5 }, { a: { b: { c: 1 } } });
-/*
-{
-	a: {
-		b: {
-			a: 2,
-			c: 1,
-		}
-	},
-	d: 5,
-}
-*/

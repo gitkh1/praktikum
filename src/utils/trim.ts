@@ -14,11 +14,3 @@ export default function trim(str: string, dictStr?: string): string {
   console.log(result);
   return result;
 }
-
-trim('  abc  '); // => 'abc'
-trim('-_-abc-_-', '_-'); // => 'abc'
-trim('\xA0foo'); // "foo"
-trim('\xA0foo', ' '); // " foo"
-trim('-_-ab c -_-', '_-'); // ab c
-
-['  foo  ', '  bar  '].map((value) => trim(value)); // => ['foo', 'bar']

@@ -15,15 +15,15 @@ export default class EventBus {
   }
   off(event: string, callback: Listener) {
     if (!this._listeners[event].has(callback)) {
-      throw new Error(`Нет события: ${event}`);
+      console.log(`Нет события: ${event}`);
     }
     this._listeners[event].delete(callback);
   }
   emit(event: string) {
     if (!this._listeners[event]) {
-      throw new Error(`Нет события: ${event}`);
+      console.log(`Нет события: ${event}`);
     }
-    this._listeners[event].forEach(listener => listener());
+    this._listeners[event]?.forEach(listener => listener());
   }
 
 }

@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 // Simple template engine ((template, context) => DOM element)
 // Поддержка циклов {{%each}} -- {{/%each}}
+
 import isEmpty from './isEmpty';
 
 type DOMElement = HTMLElement | DocumentFragment;
@@ -32,9 +33,12 @@ export default class Templator {
   propsRegExp = {
     type: /type="([^=<>\n]*)"/gm,
     src: /src="([^=<>\n]*)"/gm,
-    alt: /src="([^=<>\n]*)"/gm,
+    alt: /alt="([^=<>\n]*)"/gm,
     href: /href="([^=<>\n]*)"/gm,
+    value: /value="([^=<>\n]*)"/gm,
     name: /name="([^=<>\n]*)"/gm,
+    dataForm: /data-form="([^=<>\n]*)"/gm,
+    disabled: /disabled="([^=<>\n]*)"/gm,
     dataId: /data-id="([^=<>\n]*)"/gm,
     placeholder: /placeholder="([^=<>\n]*)"/gm,
   };
@@ -50,12 +54,15 @@ export default class Templator {
     let result = obj;
     for (const key of keys) {
       const value = result[key];
-      if (!value) {
+      if (value === undefined) {
         return path;
       }
       result = value;
     }
-    return result ?? path;
+    if (result === undefined || result === null) {
+      return path;
+    }
+    return result;
   }
 
   private getTagType(description: string): string {
@@ -81,9 +88,17 @@ export default class Templator {
   }
 
   private cutStringByMask(string: string, regExpMask: RegExp): string {
-    const FIRST_MATCH = 0;
-    const stringByMask: string = string?.match(regExpMask)?.[FIRST_MATCH] || '';
-    return stringByMask;
+    try {
+      const FIRST_MATCH = 0;
+      let stringByMask = '';
+      if (string) {
+        stringByMask = string?.match(regExpMask)?.[FIRST_MATCH] || '';
+      }
+      return stringByMask;
+    } catch (e) {
+      console.log(e);
+      return '';
+    }
   }
 
   private cutStringByMaskAndQuotes(string: string, regExpMask: RegExp): string {
@@ -105,11 +120,19 @@ export default class Templator {
   ) {
     for (const [prop, regexp] of Object.entries(this.propsRegExp)) {
       const propName = this.cutStringByMaskAndQuotes(description, regexp);
-      const propValue = <string>this.get(ctx, propName);
       if (!isEmpty(propName)) {
-        if (prop === 'dataId') {
-          element.dataset.id = <string>propValue;
+        if (propName[0] === '?') {
+          const propValue = this.get(ctx, propName.slice(1)) as unknown;
+          if (propValue === true) {
+            element.setAttribute(prop, '');
+          } else {
+            element.removeAttribute(prop);
+          }
+        } else if (prop.slice(0, 4) === 'data') {
+          const propValue = this.get(ctx, propName) as string;
+          element.dataset[prop.slice(4).toLowerCase()] = propValue;
         } else {
+          const propValue = this.get(ctx, propName) as string;
           element.setAttribute(prop, propValue);
         }
       }

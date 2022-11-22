@@ -1,5 +1,4 @@
-export const template =
-  `<form class="{{%form form--user%}}">
+const template = `<form class="{{%form form--user%}}">
     {{{ avatar }}}
     {{{ title }}}
     {{{ email }}}
@@ -11,6 +10,9 @@ export const template =
     <div class="{{%form__actions%}}">
       {{{ changedata }}}
       {{{ changepassword }}}
+      {{{ gochats }}}
       {{{ out }}}
     </div>
   </form>`;
+
+export default template;

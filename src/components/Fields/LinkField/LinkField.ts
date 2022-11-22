@@ -1,8 +1,9 @@
+import '../../Link/Link.scss';
 import '../Fields.scss';
 
 import Block from '../../../utils/Block';
 import Templator from '../../../utils/Templator';
-import { template } from './LinkField.tmpl';
+import template from './LinkField.tmpl';
 
 type LinkFieldProps = {
   description: string;
@@ -17,7 +18,7 @@ export default class LinkField extends Block<LinkFieldProps> {
     super({
       ...props,
       linkClasses: [...DEFAULT_LINK_CLASSES, ...(props.linkClasses || [''])],
-    });
+    }, 'form__field');
   }
 
   render() {
