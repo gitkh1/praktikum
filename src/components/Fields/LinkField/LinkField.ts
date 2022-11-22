@@ -2,7 +2,7 @@ import '../../Link/Link.scss';
 import '../Fields.scss';
 
 import Block from '../../../utils/Block';
-import Templator from '../../../utils/Templator';
+import Templator from '../../../utils/templator';
 import template from './LinkField.tmpl';
 
 type LinkFieldProps = {

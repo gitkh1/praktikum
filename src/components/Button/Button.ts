@@ -1,7 +1,7 @@
 import './Button.scss';
 
 import Block from '../../utils/Block';
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 import template from './Button.tmpl';
 
 type ButtonProps = {

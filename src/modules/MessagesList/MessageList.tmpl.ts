@@ -1,4 +1,4 @@
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 
 export type MessageProps = {
   content: string;

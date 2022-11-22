@@ -7,7 +7,7 @@ import PlainObject from '../../types/PlainObject';
 import Block from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
 import Store, { STORE_PATHS,StoreEvents } from '../../utils/Store';
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 import template from './PopUpInput.tmpl';
 
 export const OVERLAY_CLASS = 'overlay';

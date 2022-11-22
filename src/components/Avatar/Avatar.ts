@@ -1,7 +1,7 @@
 import './Avatar.scss';
 
 import Block from '../../utils/Block';
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 import template from './Avatar.tmpl';
 import saver from './saver.png';
 
