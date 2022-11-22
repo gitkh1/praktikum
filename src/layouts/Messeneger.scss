@@ -21,9 +21,6 @@
     background-color: $background-dark;
     flex: 1;
     overflow-y: scroll;
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: flex-end;
   }
 
   &__content {
@@ -32,6 +29,7 @@
     align-items: flex-end;
     justify-content: flex-end;
     padding: 20px;
+    height: 100%;
   }
 
   &__content:hover {

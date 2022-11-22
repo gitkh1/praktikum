@@ -81,16 +81,13 @@ class ChatController {
 
   async fromAPItoChat(msg: Msg) {
     const users = Store.getState().users;
-    console.log(users);
     if (!users[`${msg.user_id}`]) {
       const [isOk, body] = await userAPI.getUserInfo(msg.user_id);
-      console.log(body);
       if (!isOk) {
         return;
       }
       const data = body as UserProfileData;
       users[`${msg.user_id}`] = `${data.first_name} ${data.second_name}`;
-      console.log(users);
     }
     myMessageList.addMessage(msg);
   }

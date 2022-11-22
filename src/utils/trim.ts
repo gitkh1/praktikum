@@ -11,6 +11,5 @@ export default function trim(str: string, dictStr?: string): string {
     }
     result = result.slice(start, stop + 1);
   }
-  console.log(result);
   return result;
 }
