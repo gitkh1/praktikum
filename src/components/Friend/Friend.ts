@@ -4,7 +4,7 @@ import './Friend.scss';
 import { FRIEND_CLASS } from '../../controllers/Router';
 import FriendProps from '../../types/FriendProps';
 import Block from '../../utils/Block';
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 import saver from '../Avatar/saver.png';
 import template from './Friend.tmpl';
 

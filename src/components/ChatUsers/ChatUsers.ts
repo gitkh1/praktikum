@@ -4,7 +4,7 @@ import {
 } from '../../controllers/ChatsController';
 import Block from '../../utils/Block';
 import Store, { StoreEvents } from '../../utils/Store';
-import Templator from '../../utils/Templator';
+import Templator from '../../utils/templator';
 import template from './ChatUsers.tmpl';
 
 export type ChatUsersType = {
