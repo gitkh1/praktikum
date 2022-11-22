@@ -1,7 +1,7 @@
 import { EventCallback } from '../types/Events';
 import PlainObject from '../types/PlainObject';
 import EventBus from './EventBus';
-import Templator from './Templator';
+import Templator from './templator';
 
 type OwnProps = PlainObject;
 
