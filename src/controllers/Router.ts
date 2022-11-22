@@ -11,7 +11,7 @@ import chatController from './ChatController';
 import formController from './FormsController';
 import { ERR_PAGE_PATH } from './Paths';
 
-const HREF_REGEXP = /https?:\/\/[a-z0-9.:]*\//gim;
+const HREF_REGEXP = /https?:\/\/[a-z0-9-.:]*\//gim;
 
 export const FRIEND_CLASS = 'friend__wrapper';
 
