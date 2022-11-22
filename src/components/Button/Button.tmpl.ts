@@ -1,2 +1,3 @@
-export const template =
-  `<button class="{{classNames}}" type="{{type}}">{{description}}</button>`;
+const template = `<button class="{{classNames}}" type="{{%submit%}}">{{description}}</button>`;
+
+export default template;

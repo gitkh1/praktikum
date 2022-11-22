@@ -1,31 +1,105 @@
-import "../../layouts/Form.scss";
-import "../../components/Avatar/Avatar.scss"
+import '../../layouts/Form.scss';
+import '../../components/Avatar/Avatar.scss';
 
-import Button from "../../components/Button/Button";
-import LongField from "../../components/Fields/LongField/LongField";
-import LabledInput from "../../components/Input/LabledInput/LabledInput";
-import Title from "../../components/Title/Title";
-import formHandler from "../../utils/formHadler";
-import View, {EventListeners} from "../../utils/View";
-import { template } from "./UserChangeData.tmpl";
+import Button from '../../components/Button/Button';
+import LongField from '../../components/Fields/LongField/LongField';
+import LabledInput from '../../components/Input/LabledInput/LabledInput';
+import Title from '../../components/Title/Title';
+import { formHandlers } from '../../controllers/FormsController';
+import { mapUserToProps } from '../../controllers/UserController';
+import Block from '../../utils/Block';
+import isEqual from '../../utils/isEqual';
+import Store, { StoreEvents } from '../../utils/Store';
+import template from './UserChangeData.tmpl';
 
-type UserChangeDataProps = {
-  formClasses: string[];
-  label: LabledInput;
-  title: Title;
-  email: LongField;
-  login: LongField;
-  firstname: LongField;
-  lastname: LongField;
-  chatname: LongField;
-  phone: LongField;
-  button: Button;
-  events: EventListeners;
-}
+const label = new LabledInput(
+  {
+    name: 'avatar',
+    alt: 'Ваше фото',
+  },
+  'form__avatar'
+);
 
-class UserChangeData extends View<UserChangeDataProps> {
-  constructor(props: UserChangeDataProps) {
-    super(props);
+const title = new Title({
+  description: 'Пользователь',
+});
+
+const email = new LongField({
+  description: 'Почта',
+  name: 'email',
+  type: 'email',
+});
+
+const login = new LongField({
+  description: 'Логин',
+  name: 'login',
+  type: 'text',
+});
+
+const firstname = new LongField({
+  description: 'Имя',
+  name: 'first_name',
+  type: 'text',
+});
+
+const lastname = new LongField({
+  description: 'Фамилия',
+  name: 'second_name',
+  type: 'text',
+});
+
+const chatname = new LongField({
+  description: 'Имя в чате',
+  name: 'display_name',
+  type: 'text',
+});
+
+const phone = new LongField({
+  description: 'Телефон',
+  name: 'phone',
+  type: 'phone',
+});
+
+const button = new Button(
+  {
+    description: 'Сохранить',
+  },
+  'form__field'
+);
+
+class UserChangeData extends Block<object> {
+  constructor() {
+    let state = mapUserToProps(Store.getState());
+    super(
+      {
+        label,
+        title,
+        email,
+        login,
+        firstname,
+        lastname,
+        chatname,
+        phone,
+        button,
+        events: { ...formHandlers, input: [changePhotoHandler, false] },
+      },
+      'root__inner'
+    );
+
+    Store.on(StoreEvents.Updated, () => {
+      const newState = mapUserToProps(Store.getState());
+      if (!isEqual(state, newState)) {
+        email.setProps({ value: newState.email });
+        phone.setProps({ value: newState.phone });
+        firstname.setProps({ value: newState.first_name });
+        lastname.setProps({ value: newState.second_name });
+        login.setProps({ value: newState.login });
+        title.setProps({ description: newState.display_name });
+        chatname.setProps({ value: newState.display_name });
+        label.setProps({ src: newState.avatar });
+      }
+      state = newState;
+    });
   }
 
   render() {
@@ -33,101 +107,61 @@ class UserChangeData extends View<UserChangeDataProps> {
   }
 }
 
-const label = new LabledInput({
-  inputClasses: ['label__input'],
-  labelClasses: ['label', 'avatar', 'form__avatar'],
-  name: 'avatar',
-  src: '#',
-  alt: 'Ваше фото',
-})
+const userchangedata = new UserChangeData();
 
-const title = new Title({
-  titleClasses: ['form__title'],
-  description: 'Пользователь',
-})
+export default userchangedata;
 
-const email = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Почта',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'email',
-  type: 'email',
-  placeholder: ' ',
-})
+function changePhotoHandler(e: Event) {
+  const fileReader = new FileReader();
+  const target = e.target as HTMLInputElement;
+  if (!target) {
+    return;
+  }
+  const files = target.files;
+  const file = files?.[0];
+  if (!file) {
+    return;
+  }
+  if (file.size > 1024 * 1024) {
+    console.log('Файл слишком большой!');
+    return;
+  }
+  fileReader.readAsDataURL(file);
+  fileReader.addEventListener('load', () => {
+    const form = target.closest('form');
+    const img = form?.querySelector('img');
+    if (!img) {
+      return;
+    }
+    img.src = fileReader.result as string;
+  });
+}
 
-const login = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Логин',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'login',
-  type: 'text',
-  placeholder: ' ',
-})
+// function showPhotoForm() {
+//   const photoForm = document
+//     .getElementById('loadphoto')
+//     .content.cloneNode(true).firstElementChild;
+//   photoForm.querySelector('.newphoto__name').textContent = user.name;
+//   app.appendChild(photoForm);
 
-const firstname = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Имя',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'first_name',
-  type: 'text',
-  placeholder: ' ',
-})
+//   const photoPreview = photoForm.querySelector('.newphoto__preview');
+//   const photoInput = photoForm.querySelector('#photoInput');
+//   const fileReader = new FileReader();
 
-const lastname = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Фамилия',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'last_name',
-  type: 'text',
-  placeholder: ' ',
-})
+//   photoInput.addEventListener('change', (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       if (file.size > 1024 * 1024) {
+//         console.log('Файл слишком большой!');
+//       } else {
+//         fileReader.readAsDataURL(file);
+//       }
+//     }
+//   });
 
-const chatname = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Имя в чате',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'display_name',
-  type: 'text',
-  placeholder: ' ',
-})
-
-const phone = new LongField({
-  fieldClasses: ['form__field', 'field', 'field--long'],
-  fieldInnerClasses: ['field__description', 'field__description--long'],
-  description: 'Телефон',
-  inputClasses: ['field__input', 'field__input--long'],
-  name: 'phone',
-  type: 'phone',
-  placeholder: ' ',
-})
-
-const button = new Button({
-  description: 'Сохранить',
-  type: 'submit',
-  classNames: ['btn', 'form__btn'],
-})
-
-const userchangedata = new UserChangeData({
-  formClasses: ['form', 'form--user'],
-  label: label,
-  title: title,
-  email: email,
-  login: login,
-  firstname: firstname,
-  lastname: lastname,
-  chatname: chatname,
-  phone: phone,
-  button: button,
-  events: {
-    submit: [formHandler, false],
-    focus:  [formHandler, true],
-    blur:  [formHandler, true],
-  },
-});
-
-export { userchangedata };
+//   fileReader.addEventListener('load', () => {
+//     photoPreview.src = fileReader.result;
+//     user.photo = fileReader.result;
+//     sendNewPhoto(fileReader.result);
+//   });
+// }

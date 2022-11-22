@@ -1,19 +1,19 @@
-import "./Input.scss";
+import './Input.scss';
 
-import Templator from "../../utils/Templator";
-import View from "../../utils/View";
-import { template } from "./Input.tmpl";
+import Block from '../../utils/Block';
+import Templator from '../../utils/Templator';
+import template from './Input.tmpl';
 
 type InputProps = {
   inputClasses: string[];
   type: string;
   name: string;
   placeholder: string;
-}
+};
 
-export default class Input extends View<InputProps> {
-  constructor(props: InputProps) {
-    super(props);
+export default class Input extends Block<InputProps> {
+  constructor(props: InputProps, containerTagName?:string) {
+    super(props, containerTagName);
   }
 
   render() {

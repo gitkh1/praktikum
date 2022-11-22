@@ -1,31 +1,95 @@
-import "../../layouts/Form.scss";
+import '../../layouts/Form.scss';
 
-import Button from "../../components/Button/Button";
-import ShortField from "../../components/Fields/ShortField/ShortField";
-import Link from "../../components/Link/Link";
-import Title from "../../components/Title/Title";
-import formHandler from "../../utils/formHadler";
-import View, {EventListeners} from "../../utils/View";
-import { template } from "./Sign.tmpl";
+import Button from '../../components/Button/Button';
+import ShortField from '../../components/Fields/ShortField/ShortField';
+import Link from '../../components/Link/Link';
+import Title from '../../components/Title/Title';
+import { formHandlers } from '../../controllers/FormsController';
+import PATHS from '../../controllers/Paths';
+import Block from '../../utils/Block';
+import template from './Sign.tmpl';
 
-type SignProps = {
-  formClasses: string[];
-  title: Title;
-  email: ShortField;
-  firstname: ShortField;
-  lastname: ShortField;
-  phone: ShortField;
-  login: ShortField;
-  password: ShortField;
-  password2: ShortField;
-  button: Button;
-  link: Link;
-  events: EventListeners;
-}
+const title = new Title({
+  description: 'Регистрация',
+});
 
-class Sign extends View<SignProps> {
-  constructor(props: SignProps) {
-    super(props);
+const email = new ShortField({
+  description: 'Почта',
+  name: 'email',
+  type: 'email',
+});
+
+const login = new ShortField({
+  description: 'Логин',
+  name: 'login',
+  type: 'text',
+});
+
+const firstname = new ShortField({
+  description: 'Имя',
+  name: 'first_name',
+  type: 'text',
+});
+
+const lastname = new ShortField({
+  description: 'Фамилия',
+  name: 'second_name',
+  type: 'text',
+});
+
+const phone = new ShortField({
+  description: 'Телефон',
+  name: 'phone',
+  type: 'phone',
+});
+
+const password = new ShortField({
+  description: 'Пароль',
+  name: 'password',
+  type: 'password',
+});
+
+const password2 = new ShortField({
+  description: 'Пароль (еще раз)',
+  name: 'password2',
+  type: 'password',
+});
+
+const button = new Button(
+  {
+    description: 'Зарегистрироваться',
+    classNames: ['btn', 'form__btn'],
+  },
+  'form__field'
+);
+
+const link = new Link(
+  {
+    linkClasses: ['link'],
+    href: PATHS.auth,
+    description: 'Войти',
+  },
+  'form__link'
+);
+
+class Sign extends Block<object> {
+  constructor() {
+    super(
+      {
+        title,
+        email,
+        firstname,
+        lastname,
+        phone,
+        login,
+        password,
+        password2,
+        button,
+        link,
+        events: formHandlers,
+      },
+      'root__inner'
+    );
   }
 
   render() {
@@ -33,103 +97,6 @@ class Sign extends View<SignProps> {
   }
 }
 
-const title = new Title({
-  titleClasses: ['form__title'],
-  description: 'Регистрация',
-})
+const sign = new Sign();
 
-const email = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Почта',
-  inputClasses: 'field__input',
-  name: 'email',
-  type: 'email',
-  placeholder: ' ',
-})
-
-const login = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Логин',
-  inputClasses: 'field__input',
-  name: 'login',
-  type: 'text',
-  placeholder: ' ',
-})
-
-const firstname = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Имя',
-  inputClasses: 'field__input',
-  name: 'first_name',
-  type: 'text',
-  placeholder: ' ',
-})
-
-const lastname = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Фамилия',
-  inputClasses: 'field__input',
-  name: 'last_name',
-  type: 'text',
-  placeholder: ' ',
-})
-
-const phone = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Телефон',
-  inputClasses: 'field__input',
-  name: 'phone',
-  type: 'phone',
-  placeholder: ' ',
-})
-
-const password = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Пароль',
-  inputClasses: 'field__input',
-  name: 'password',
-  type: 'password',
-  placeholder: ' ',
-})
-
-const password2 = new ShortField({
-  fieldClasses: ['form__field', 'field'],
-  description: 'Пароль (еще раз)',
-  inputClasses: 'field__input',
-  name: 'password',
-  type: 'password',
-  placeholder: ' ',
-})
-
-const button = new Button({
-  description: 'Зарегистрироваться',
-  type: 'submit',
-  classNames: ['btn', 'form__btn', 'form__field'],
-})
-
-const link = new Link({
-  linkClasses: ['link', 'form__link', 'form__field'],
-  href: '#auth',
-  description: 'Войти',
-})
-
-const sign = new Sign({
-  formClasses: ['form', 'form--sign'],
-  title: title,
-  email: email,
-  firstname: firstname,
-  lastname: lastname,
-  phone: phone,
-  login: login,
-  password: password,
-  password2: password2,
-  button: button,
-  link: link,
-  events: {
-    submit: [formHandler, false],
-    focus: [formHandler, true],
-    blur: [formHandler, true],
-  },
-});
-
-export { sign };
+export default sign;

@@ -5,6 +5,10 @@
   &__field {
     margin-right: 10px;
 
+    &--file {
+      display: none;
+    }
+
     &:last-child {
       margin-right: 0;
     }

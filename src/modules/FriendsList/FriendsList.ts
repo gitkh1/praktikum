@@ -1,42 +1,59 @@
-import Friend from "../../components/Friend/Friend";
-import View from "../../utils/View";
-import { template } from "./FriendsList.tnpl";
+import Friend from '../../components/Friend/Friend';
+import { mapChatListToProps } from '../../controllers/ChatsController';
+import Block from '../../utils/Block';
+import isEqual from '../../utils/isEqual';
+import Store, { StoreEvents } from '../../utils/Store';
+import template from './FriendsList.tmpl';
 
-type FriendListProps = Friend[];
+export class FriendsList extends Block<object> {
+  private userList: Friend[] = [];
+  private checkedFriend: Friend | null;
 
-// Список друзей слева, динамически будут добавляться друзья,
-// для удобства выделен в отдельный модуль как и лента переписки
-export class FriendsList extends View<FriendListProps> {
-  constructor(props: FriendListProps) {
-    super(props);
+  constructor() {
+    super({}, 'friends__container');
+    let state = mapChatListToProps(Store.getState());
+    this.checkedFriend = null;
+    this.hide();
+
+    Store.on(StoreEvents.Updated, () => {
+      const store = Store.getState();
+      const newState = mapChatListToProps(store);
+      if (!isEqual(state, newState)) {
+        this.userList = newState.userList.map((friend) => new Friend(friend));
+        this.setChildren(this.userList);
+        this.toggleChecked();
+        state = newState;
+        this.show();
+      }
+    });
   }
 
   render() {
     return this.compile(template, this.props);
   }
+
+  getChatList() {
+    return this.userList;
+  }
+
+  toggleChecked() {
+    const store = Store.getState();
+    const newChatId = store.activeChat.id;
+
+    if (newChatId !== '') {
+      this.checkedFriend?.uncheck();
+      this.checkedFriend =
+        this.userList.find((friend) => friend.getDataId() === newChatId) ||
+        null;
+      this.checkedFriend?.check();
+
+    } else {
+      this.userList.find((friend) => friend.getDataId() === newChatId) || null;
+      this.checkedFriend?.check();
+    }
+  }
 }
 
-const friend0 = new Friend({
-  chatname: 'Маша',
-  message: 'Целую!',
-  time: '18:00',
-  unread: '1',
-})
-const friend1 = new Friend({
-  chatname: 'Петя',
-  message: 'Привет!',
-  time: '18:00',
-  unread: '2',
-})
-const friend2 = new Friend({
-  chatname: 'Иван',
-  message: 'Пока!',
-  time: '12:00',
-  unread: '1',
-})
-
-const userList: FriendListProps = [friend0, friend1, friend2];
-
-const myFriendsList = new FriendsList(userList);
+const myFriendsList = new FriendsList();
 
 export default myFriendsList;

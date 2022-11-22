@@ -1,5 +1,6 @@
-export const template =
-  `<form class="{{formClasses}}">
+import FORM_TYPES from '../../types/FormTypes';
+
+const template = `<form class="{{%form form--sign%}}" data-form="{{%${FORM_TYPES.SIGNUP}%}}">
     {{{ title }}}
     {{{ email }}}
     {{{ login }}}
@@ -11,3 +12,5 @@ export const template =
     {{{ button }}}
     {{{ link }}}
   </form>`;
+
+export default template;

@@ -1,18 +1,24 @@
-import "../Fields.scss";
+import '../../Link/Link.scss';
+import '../Fields.scss';
 
-import Templator from "../../../utils/Templator";
-import View from "../../../utils/View";
-import { template } from "./LinkField.tmpl";
+import Block from '../../../utils/Block';
+import Templator from '../../../utils/Templator';
+import template from './LinkField.tmpl';
 
 type LinkFieldProps = {
-  fieldClasses: string[];
   description: string;
   href: string;
-  linkClasses: string[];
-}
-export default class LinkField extends View<LinkFieldProps> {
+  linkClasses?: string[];
+};
+
+const DEFAULT_LINK_CLASSES = ['link', 'form__link', 'link--long'];
+
+export default class LinkField extends Block<LinkFieldProps> {
   constructor(props: LinkFieldProps) {
-    super(props);
+    super({
+      ...props,
+      linkClasses: [...DEFAULT_LINK_CLASSES, ...(props.linkClasses || [''])],
+    }, 'form__field');
   }
 
   render() {

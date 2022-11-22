@@ -1,20 +1,18 @@
-import "../Fields.scss";
+import '../../Input/Input.scss';
+import '../Fields.scss';
 
-import Templator from "../../../utils/Templator";
-import View from "../../../utils/View";
-import { template } from "./ShortField.tmpl";
+import Block from '../../../utils/Block';
+import Templator from '../../../utils/Templator';
+import template from './ShortField.tmpl';
 
 type ShortFieldProps = {
-  fieldClasses: string[];
   description: string;
-  inputClasses: string;
   name: string;
   type: string;
-  placeholder: string;
-}
-export default class ShortField extends View<ShortFieldProps> {
+};
+export default class ShortField extends Block<ShortFieldProps> {
   constructor(props: ShortFieldProps) {
-    super(props);
+    super(props, 'form__field');
   }
 
   render() {
