@@ -27,6 +27,8 @@
 - Проект запускается командой `npm run start` - localhost:3000
 - Разработка проекта при помощи parcel - команда `npm run dev` - localhost:3000
 - Build-версия проекта при помощи parcel - команда `npm run build` - localhost:3000
+- ESlint - команда `npm run lint`
+- Stylelint - команда `npm run stylelint`
 
 ## Проект на Netlify
 
