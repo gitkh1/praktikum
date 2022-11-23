@@ -1,7 +1,6 @@
-@import "../../layouts/Consts.scss";
+@import "../../layouts/Consts";
 
 .new-msg {
-
   &__field {
     margin-right: 10px;
 
@@ -27,7 +26,7 @@
       }
 
       &::after {
-        content: '';
+        content: "";
         width: 15px;
         height: 2px;
         background: #fff;
@@ -37,7 +36,7 @@
       }
 
       &::before {
-        content: '';
+        content: "";
         width: 8px;
         height: 8px;
         background: none;

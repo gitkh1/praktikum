@@ -42,4 +42,8 @@ router
   .use(userchangedata, PATHS.userchangedata, userAuthController.getUser)
   .use(err, PATHS.err);
 
+export const AUTH_PAGE = PATHS.auth;
+export const SIGN_PAGES = [PATHS.auth, PATHS.sign];
+export const DEFAULT_MESSENGER_PAGE = PATHS.messenger;
+
 export default router;

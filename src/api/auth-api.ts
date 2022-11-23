@@ -6,32 +6,15 @@ import BaseAPI from './base-api';
 
 const AuthAPIInstance = new HTTPTransport('/auth');
 
-const NEED_TO_LOGOUT = 'User already in system';
-
 export default class AuthAPI extends BaseAPI {
   async signIn(data: SignInData) {
     const response = await AuthAPIInstance.post('/signin', data);
-    const [isOk, body] = this.processResponse(response as ServerResponse);
-    if (!isOk && body?.reason === NEED_TO_LOGOUT) {
-      await this.logOut();
-      alert('Попробуйте еще раз');
-    }
-    return [isOk, body];
+    return this.processResponse(response as ServerResponse);
   }
 
   async signUp(data: SignUpData) {
     const response = await AuthAPIInstance.post('/signup', data);
-    const [isOk, body] = this.processResponse(response as ServerResponse);
-    if (isOk) {
-      return [isOk, body];
-    }
-    if (body?.reason === NEED_TO_LOGOUT) {
-      await this.logOut();
-      alert('Попробуйте еще раз');
-    } else {
-      alert(`${body.reason}`);
-    }
-    return [isOk, body];
+    return this.processResponse(response as ServerResponse);
   }
 
   async getUser() {

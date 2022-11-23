@@ -1,4 +1,4 @@
-@import "./Consts.scss";
+@import "./Consts";
 
 .chat {
   flex: 3;
@@ -7,7 +7,6 @@
   align-items: stretch;
   justify-content: space-between;
   visibility: hidden;
-
 
   &__menu {
     height: 65px;
@@ -70,12 +69,6 @@
 .control {
   position: relative;
 
-
-  &:hover>&__popup {
-    display: block;
-  }
-
-
   &__popup {
     display: none;
     position: absolute;
@@ -83,6 +76,10 @@
     top: 0;
     padding-top: 35px;
     z-index: 1;
+  }
+
+  &:hover > &__popup {
+    display: block;
   }
 
   &__active {
@@ -127,7 +124,7 @@
     position: relative;
 
     &::before {
-      content: '';
+      content: "";
       width: 4px;
       height: 4px;
       background: $grey;
@@ -137,7 +134,7 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       width: 4px;
       height: 4px;
       background: $grey;
@@ -146,11 +143,9 @@
       top: 7px;
     }
   }
-
 }
 
 .user {
-
   &__avatar {
     width: 35px;
     height: 35px;
@@ -163,7 +158,6 @@
     color: $light-grey;
   }
 }
-
 
 .friends {
   flex: 1;
@@ -178,7 +172,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: 20px 10px 0px;
+    padding: 20px 10px 0;
   }
 
   &__links {
@@ -191,7 +185,7 @@
     align-self: flex-end;
 
     &::after {
-      content: '>';
+      content: ">";
       margin-left: 5px;
     }
   }
@@ -200,7 +194,7 @@
     align-self: flex-start;
 
     &::before {
-      content: '+';
+      content: "+";
       margin-right: 5px;
     }
   }
@@ -217,9 +211,9 @@
 
   &__container {
     overflow-y: scroll;
+    display: none;
   }
 }
-
 
 .message {
   position: relative;
@@ -251,7 +245,7 @@
   }
 
   &__name {
-    color: #5387C1;
+    color: #5387c1;
     margin-bottom: 4px;
   }
 

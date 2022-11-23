@@ -1,5 +1,3 @@
-import './Title.scss';
-
 import Block from '../../utils/Block';
 import Templator from '../../utils/templator';
 import template from './Title.tmpl';
@@ -11,10 +9,13 @@ type TitleProps = {
 
 export default class Title extends Block<TitleProps> {
   constructor(props: TitleProps) {
-    super({
-      ...props,
-      titleClasses: props.titleClasses || [''],
-    }, 'form__title');
+    super(
+      {
+        ...props,
+        titleClasses: props.titleClasses || [''],
+      },
+      'form__title'
+    );
   }
 
   render() {

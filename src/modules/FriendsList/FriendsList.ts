@@ -13,7 +13,6 @@ export class FriendsList extends Block<object> {
     super({}, 'friends__container');
     let state = mapChatListToProps(Store.getState());
     this.checkedFriend = null;
-    this.hide();
 
     Store.on(StoreEvents.Updated, () => {
       const store = Store.getState();
@@ -23,7 +22,11 @@ export class FriendsList extends Block<object> {
         this.setChildren(this.userList);
         this.toggleChecked();
         state = newState;
-        this.show();
+        if (this.userList.length === 0) {
+          this.hide();
+        } else {
+          this.show();
+        }
       }
     });
   }
@@ -46,7 +49,6 @@ export class FriendsList extends Block<object> {
         this.userList.find((friend) => friend.getDataId() === newChatId) ||
         null;
       this.checkedFriend?.check();
-
     } else {
       this.userList.find((friend) => friend.getDataId() === newChatId) || null;
       this.checkedFriend?.check();

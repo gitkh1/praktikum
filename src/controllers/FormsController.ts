@@ -8,7 +8,10 @@ import SignInData from '../types/SignInData';
 import SignUpData from '../types/SignUpData';
 import UserProfileData from '../types/UserProfileData';
 import Store, { STORE_PATHS } from '../utils/Store';
-import validateForm, { validatePasswordForm, validateSignUpPasswordForm } from '../utils/validation';
+import validateForm, {
+  validatePasswordForm,
+  validateSignUpPasswordForm,
+} from '../utils/validation';
 import chatController from './ChatController';
 import chatListController from './ChatsController';
 import userAuthController from './UserController';
@@ -68,47 +71,51 @@ class FormsController {
   }
 
   async submitForm(event: Event) {
-    event.preventDefault();
-    const form = getFormByEvent(event);
-    if (!validateForm(form)) {
-      return;
-    }
-    const data = collectInputsValues(form) as PlainObject;
-    const type = form.dataset.form;
-    if (type === FORM_TYPES.SIGNUP) {
-      if (!validateSignUpPasswordForm(form)) {
+    try {
+      event.preventDefault();
+      const form = getFormByEvent(event);
+      if (!validateForm(form)) {
         return;
       }
-      userAuthController.signUp(data as SignUpData);
-    } else if (type === FORM_TYPES.LOGIN) {
-      userAuthController.login(data as SignInData);
-    } else if (type === FORM_TYPES.UPDATE_USER) {
-      const avatar = collectFile(form);
-      userAuthController.updateUser(data as UserProfileData, avatar);
-    } else if (type === FORM_TYPES.CHANGE_PWD) {
-      if (!validatePasswordForm(form)) {
-        return;
+      const data = collectInputsValues(form) as PlainObject;
+      const type = form.dataset.form;
+      if (type === FORM_TYPES.SIGNUP) {
+        if (!validateSignUpPasswordForm(form)) {
+          return;
+        }
+        userAuthController.signUp(data as SignUpData);
+      } else if (type === FORM_TYPES.LOGIN) {
+        userAuthController.login(data as SignInData);
+      } else if (type === FORM_TYPES.UPDATE_USER) {
+        const avatar = collectFile(form);
+        userAuthController.updateUser(data as UserProfileData, avatar);
+      } else if (type === FORM_TYPES.CHANGE_PWD) {
+        if (!validatePasswordForm(form)) {
+          return;
+        }
+        userAuthController.changePassword(data as ChangePasswordData);
+      } else if (type === FORM_TYPES.CREATE_CHAT) {
+        await chatListController.createChat(data as NewChatData);
+        form.reset();
+      } else if (type === FORM_TYPES.ADD_USER) {
+        await chatListController.addUserToChat(data);
+        form.reset();
+      } else if (type === FORM_TYPES.REMOVE_USER) {
+        await chatListController.removeUserFromChat(data);
+        form.reset();
+      } else if (type === FORM_TYPES.CHAT_PHOTO) {
+        const avatar = collectFile(form);
+        if (!avatar) {
+          return;
+        }
+        await chatListController.changePhotoChat(avatar);
+        form.reset();
+      } else if (type === FORM_TYPES.NEW_MESSAGE) {
+        await chatController.sendMessage(data);
+        form.reset();
       }
-      userAuthController.changePassword(data as ChangePasswordData);
-    } else if (type === FORM_TYPES.CREATE_CHAT) {
-      await chatListController.createChat(data as NewChatData);
-      form.reset();
-    } else if (type === FORM_TYPES.ADD_USER) {
-      await chatListController.addUserToChat(data);
-      form.reset();
-    } else if (type === FORM_TYPES.REMOVE_USER) {
-      await chatListController.removeUserFromChat(data);
-      form.reset();
-    } else if (type === FORM_TYPES.CHAT_PHOTO) {
-      const avatar = collectFile(form);
-      if (!avatar) {
-        return;
-      }
-      await chatListController.changePhotoChat(avatar);
-      form.reset();
-    } else if (type === FORM_TYPES.NEW_MESSAGE) {
-      await chatController.sendMessage(data);
-      form.reset();
+    } catch (error) {
+      console.log(error);
     }
   }
 

@@ -5,7 +5,7 @@ import Avatar from '../../components/Avatar/Avatar';
 import LinkField from '../../components/Fields/LinkField/LinkField';
 import LongField from '../../components/Fields/LongField/LongField';
 import Title from '../../components/Title/Title';
-import PATHS from '../../controllers/Paths';
+import PATHS, { LOGOUT_PATH } from '../../controllers/Paths';
 import { mapUserToProps } from '../../controllers/UserController';
 import Block from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
@@ -77,7 +77,7 @@ const gochats = new LinkField({
 
 const out = new LinkField({
   description: 'Выйти',
-  href: PATHS.auth,
+  href: LOGOUT_PATH,
   linkClasses: ['link--yellow'],
 });
 

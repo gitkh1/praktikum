@@ -8,6 +8,8 @@ const PATHS = {
   err: '/404',
 };
 
+export const LOGOUT_PATH = '/logout';
+
 export const ERR_PAGE_PATH = PATHS.err;
 
 export default PATHS;

@@ -19,6 +19,7 @@ export const STORE_PATHS = {
   CHATS: 'chats',
   USER: 'user',
   POPUP: 'popup',
+  AUTHORIZED: 'authorized',
 };
 
 export type StoreState = {
@@ -36,6 +37,7 @@ export type StoreState = {
   };
   popup?: string;
   users: Record<string, string>;
+  authorized: boolean;
 };
 
 export const EMPTY_USER = {
@@ -60,6 +62,7 @@ class Store extends EventBus {
     user: EMPTY_USER,
     popup: '',
     users: {},
+    authorized: false,
   };
 
   getState() {

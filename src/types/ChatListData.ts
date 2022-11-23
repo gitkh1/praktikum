@@ -1,10 +1,10 @@
 export type NewChatData = {
   title: string;
-};
+}
 
 export type DeleteChatData = {
-  chatId: number;
-};
+  chatid: number;
+}
 
 export type ChatData = {
   id: number;
@@ -22,5 +22,5 @@ export type ChatData = {
     };
     time: string;
     content: string;
-  };
-};
+  }
+}

@@ -1,7 +1,6 @@
-@import "../../layouts/Consts.scss";
+@import "../../layouts/Consts";
 
 .field {
-
   &--long {
     position: relative;
     border-bottom: 1px solid #999;
@@ -28,5 +27,4 @@
       padding-bottom: 0;
     }
   }
-
 }

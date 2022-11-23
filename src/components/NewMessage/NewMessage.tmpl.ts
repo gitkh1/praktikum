@@ -6,7 +6,7 @@ const template = `<form class="{{%chat__form new-msg%}}" data-form="{{%${FORM_TY
       <img src="{{${scrap}}}" alt="{{%Приложить файл%}}">
       <input class="{{%label__input%}}" type="{{%file%}}" name="{{%file%}}">
     </label>
-    <input class="{{%colored-input new-msg__field new-msg__field--msg%}}" type="{{text}}" name="{{%message%}}" placeholder="{{%Поиск%}}">
+    <input class="{{%colored-input new-msg__field new-msg__field--msg%}}" type="{{text}}" name="{{%message%}}" placeholder="{{%Сообщение%}}">
     <button class="{{%new-msg__field new-msg__field--btn%}}" type="{{%submit%}}"></button>
   </form>`;
 

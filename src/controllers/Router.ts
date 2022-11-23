@@ -8,8 +8,10 @@ import CallBackFn from '../types/CallBackFn';
 import FORM_TYPES from '../types/FormTypes';
 import Store from '../utils/Store';
 import chatController from './ChatController';
+import { AUTH_PAGE, DEFAULT_MESSENGER_PAGE, SIGN_PAGES } from './Controller';
 import formController from './FormsController';
-import { ERR_PAGE_PATH } from './Paths';
+import PATHS, { ERR_PAGE_PATH, LOGOUT_PATH } from './Paths';
+import userAuthController from './UserController';
 
 const HREF_REGEXP = /https?:\/\/[a-z0-9-.:]*\//gim;
 
@@ -169,7 +171,7 @@ class Router {
     return this;
   }
 
-  start() {
+  async start() {
     window.onpopstate = ((event: PopStateEvent) => {
       if (event && event.currentTarget && 'location' in event.currentTarget) {
         this._onRoute(event.currentTarget?.['location']?.['pathname']);
@@ -186,7 +188,10 @@ class Router {
         if (href === undefined) {
           return;
         }
-        if (href.includes(DATA_FORM_TYPE)) {
+        // Click on LogoutLink
+        if (href === LOGOUT_PATH) {
+          userAuthController.logout().then(() => this.go(PATHS.auth));
+        } else if (href.includes(DATA_FORM_TYPE)) {
           this._dispatchDataForm(href);
         } else {
           this.go(href);
@@ -197,39 +202,65 @@ class Router {
         this._dispatchChats(event);
       }
     });
-    this._onRoute(window.location.pathname);
+    try {
+      await userAuthController.getUser();
+      this._onRoute(window.location.pathname);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   private async _dispatchChats(event: Event) {
-    const clickedId = getFriendId(event);
-    if (!clickedId) {
-      return;
-    }
-    if (getActiveChatId() === '') {
-      await chatController.getChatData(clickedId);
-      await chatController.initChat();
-      this.showChat();
-    } else if (getActiveChatId() === clickedId) {
-      await chatController.clearChat();
-      await chatController.closeChat();
-      this.hideChat();
-    } else {
-      await chatController.closeChat();
-      await chatController.getChatData(clickedId);
-      await chatController.initChat();
-      this.showChat();
+    try {
+      const clickedId = getFriendId(event);
+      if (!clickedId) {
+        return;
+      }
+      if (getActiveChatId() === '') {
+        await chatController.getChatData(clickedId);
+        await chatController.initChat();
+        this.showChat();
+      } else if (getActiveChatId() === clickedId) {
+        await chatController.closeWS();
+        await chatController.clearChat();
+        this.hideChat();
+      } else {
+        await chatController.closeWS();
+        await chatController.getChatData(clickedId);
+        await chatController.initChat();
+        this.showChat();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  private _onRoute(pathname: string) {
+  private async _onRoute(pathname: string) {
     const route = this.getRoute(pathname);
     if (!route) {
       return;
     }
 
-    if (this.currentRoute && this.currentRoute !== route) {
-      this.currentRoute.unRender();
+    // !Authorized & go to chat ? --> go to Authpage
+    if (!Store.getState().authorized) {
+      if (!SIGN_PAGES.includes(pathname)) {
+        this.go(AUTH_PAGE);
+        return;
+      }
     }
+
+    // Authorized & go to Authpage/Signpage ? --> go to chat
+    if (Store.getState().authorized) {
+      if (SIGN_PAGES.includes(pathname)) {
+        this.go(DEFAULT_MESSENGER_PAGE);
+        return;
+      }
+    }
+
+    if (this.currentRoute)
+      if (this.currentRoute && this.currentRoute !== route) {
+        this.currentRoute.unRender();
+      }
 
     this.currentRoute = route;
     route.render();

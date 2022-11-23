@@ -21,58 +21,78 @@ export type CheckedChatInfo = {
 
 class ChatListController {
   async createChat(data: NewChatData) {
-    const [isOk] = await chatListAPI.create(data);
-    if (isOk) {
-      router.overlayHide();
-      this.getChats();
+    try {
+      const [isOk] = await chatListAPI.create(data);
+      if (isOk) {
+        router.overlayHide();
+        this.getChats();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
   async getChats() {
-    const [isOk, body] = await chatListAPI.read();
-    if (isOk) {
-      Store.merge({ [STORE_PATHS.CHATS]: body });
+    try {
+      const [isOk, body] = await chatListAPI.read();
+      if (isOk) {
+        Store.merge({ [STORE_PATHS.CHATS]: body });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
   async addUserToChat(formData: PlainObject) {
-    const userId = formData[POPUP_DATA[FORM_TYPES.ADD_USER].inputName];
-    const state = mapCheckedChatToProps(Store.getState());
-    const chatId = state.activeChat.id;
-    const data = {
-      users: [Number(userId)],
-      chatId: Number(chatId),
-    };
-    const [isOk] = await chatDataAPI.addUser(data);
-    if (isOk) {
-      chatController.getChatData(chatId);
-      router.overlayHide();
+    try {
+      const userId = formData[POPUP_DATA[FORM_TYPES.ADD_USER].inputName];
+      const state = mapCheckedChatToProps(Store.getState());
+      const chatId = state.activeChat.id;
+      const data = {
+        users: [Number(userId)],
+        chatId: Number(chatId),
+      };
+      const [isOk] = await chatDataAPI.addUser(data);
+      if (isOk) {
+        chatController.getChatData(chatId);
+        router.overlayHide();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
   async removeUserFromChat(formData: PlainObject) {
-    const userId = formData[POPUP_DATA[FORM_TYPES.REMOVE_USER].inputName];
-    const state = mapCheckedChatToProps(Store.getState());
-    const chatId = state.activeChat.id;
-    const data = {
-      users: [Number(userId)],
-      chatId: Number(chatId),
-    };
-    const [isOk] = await chatDataAPI.deleteUser(data);
-    if (isOk) {
-      chatController.getChatData(chatId);
-      router.overlayHide();
+    try {
+      const userId = formData[POPUP_DATA[FORM_TYPES.REMOVE_USER].inputName];
+      const state = mapCheckedChatToProps(Store.getState());
+      const chatId = state.activeChat.id;
+      const data = {
+        users: [Number(userId)],
+        chatId: Number(chatId),
+      };
+      const [isOk] = await chatDataAPI.deleteUser(data);
+      if (isOk) {
+        chatController.getChatData(chatId);
+        router.overlayHide();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
   async changePhotoChat(formData: FormData) {
-    const state = mapCheckedChatToProps(Store.getState());
-    const chatId = state.activeChat.id;
-    formData.append('chatId', chatId);
-    const [isOk] = await chatDataAPI.updatePhoto(formData);
-    if (isOk) {
-      this.getChats();
-      router.overlayHide();
+    try {
+      const state = mapCheckedChatToProps(Store.getState());
+      const chatId = state.activeChat.id;
+      formData.append('chatId', chatId);
+      const [isOk] = await chatDataAPI.updatePhoto(formData);
+      if (isOk) {
+        this.getChats();
+        router.overlayHide();
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

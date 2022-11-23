@@ -1,4 +1,4 @@
-@import "../../layouts/Consts.scss";
+@import "../../layouts/Consts";
 
 .friend {
   overflow: hidden;
@@ -13,7 +13,7 @@
 
     &--active {
       background: $background-light;
-      transition: all $time;  
+      transition: all $time;
     }
   }
 
