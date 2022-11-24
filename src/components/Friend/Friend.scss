@@ -1,13 +1,21 @@
-@import "../../layouts/Consts.scss";
+@import "../../layouts/Consts";
 
 .friend {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   overflow: hidden;
-  transition: all $time;
-  padding: 15px 10px;
-  cursor: pointer;
+
+  &__wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transition: all $time;
+    padding: 15px 10px;
+    cursor: pointer;
+
+    &--active {
+      background: $background-light;
+      transition: all $time;
+    }
+  }
 
   &:hover {
     background: $background-light;
@@ -71,5 +79,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &--hidden {
+      display: none;
+    }
   }
 }

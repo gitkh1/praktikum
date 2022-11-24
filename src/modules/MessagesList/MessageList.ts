@@ -1,37 +1,57 @@
-import Message from "../../components/Message/Message";
-import View from "../../utils/View";
-import { template } from "./MessageList.tmpl";
+import { Msg } from '../../api/ws-api';
+import Block from '../../utils/Block';
+import Store, { StoreEvents } from '../../utils/Store';
+import template, { message, MESSAGES_CONTAINER } from './MessageList.tmpl';
 
-type MessageListProps = Message[];
-
-export class MessageList extends View<MessageListProps> {
-  constructor(props: MessageListProps) {
-    super(props);
+export class MessageList extends Block<object> {
+  private activeChatId = '';
+  private lastMsgSenderId = '';
+  constructor() {
+    super({}, 'chat__wrapper');
+    Store.on(StoreEvents.Updated, () => {
+      const state = Store.getState();
+      if (state.activeChat.id !== this.activeChatId) {
+        this.componentDidMount();
+        this.activeChatId = state.activeChat.id;
+        if (!this.activeChatId) {
+          return;
+        }
+      }
+    });
   }
 
   render() {
     return this.compile(template, this.props);
   }
+
+  addMessage(newMsgProps: Msg) {
+    const state = Store.getState();
+    const myId = state.user.id;
+
+    const isFirstMessage = this.lastMsgSenderId !== `${newMsgProps.user_id}`;
+    const isMyMessage = myId === `${newMsgProps.user_id}`;
+    const senderName = state.users[`${newMsgProps.user_id}`];
+    this.lastMsgSenderId = `${newMsgProps.user_id}`;
+    const newMessage = message(
+      newMsgProps,
+      isFirstMessage,
+      isMyMessage,
+      senderName
+    );
+
+    const element = this.getContent() as HTMLElement;
+    const container = element.querySelector(`.${MESSAGES_CONTAINER}`);
+    if (!container) {
+      return;
+    }
+    container.append(newMessage);
+    container.parentElement?.scrollTo(
+      container.scrollWidth,
+      container.clientHeight
+    );
+  }
 }
 
-const message0 = new Message({
-  content: 'Привет',
-  time: '21:45',
-})
-
-const message1 = new Message({
-  content: 'Как дела',
-  time: '21:50',
-})
-
-const message2 = new Message({
-  content: 'Что делаешь?',
-  time: '21:55',
-})
-
-
-const messageList: MessageListProps = [message0, message1, message2];
-
-const myMessageList = new MessageList(messageList);
+const myMessageList = new MessageList();
 
 export default myMessageList;

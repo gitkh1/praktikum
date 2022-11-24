@@ -1,4 +1,4 @@
-@import "./Consts.scss";
+@import "./Consts";
 
 .form {
   display: flex;
@@ -17,6 +17,17 @@
   &--user {
     width: 510px;
     background-color: transparent;
+  }
+
+  &--popup {
+    width: 340px;
+    background-color: #4f4f56;
+    border-radius: 12px;
+    padding: 30px;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
   }
 
   &__title {
@@ -44,7 +55,7 @@
 
   &__btn {
     width: 280px;
-    align-self: center;
+    margin: 0 auto;
   }
 
   &__link {
@@ -55,6 +66,5 @@
     align-self: center;
     width: 130px;
     height: 130px;
-    background: #EFEFEF;  
   }
 }

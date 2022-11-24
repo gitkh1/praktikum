@@ -1,17 +1,21 @@
-import "./Title.scss";
-
-import Templator from "../../utils/Templator";
-import View from "../../utils/View";
-import { template } from "./Title.tmpl";
+import Block from '../../utils/Block';
+import Templator from '../../utils/templator';
+import template from './Title.tmpl';
 
 type TitleProps = {
-  titleClasses: string[];
+  titleClasses?: string[];
   description: string;
-}
+};
 
-export default class Title extends View<TitleProps> {
+export default class Title extends Block<TitleProps> {
   constructor(props: TitleProps) {
-    super(props);
+    super(
+      {
+        ...props,
+        titleClasses: props.titleClasses || [''],
+      },
+      'form__title'
+    );
   }
 
   render() {

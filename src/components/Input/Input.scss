@@ -1,4 +1,4 @@
-@import "../../layouts/Consts.scss";
+@import "../../layouts/Consts";
 
 input {
   width: 100%;
@@ -20,7 +20,7 @@ input {
   color: $light-grey;
 
   &--search {
-    background: url(./search.svg) $background-light no-repeat 17px center;
+    background: url("./search.svg") $background-light no-repeat 17px center;
   }
 }
 

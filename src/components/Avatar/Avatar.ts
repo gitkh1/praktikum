@@ -1,18 +1,17 @@
-import "./Avatar.scss";
+import './Avatar.scss';
 
-import Templator from "../../utils/Templator";
-import View from "../../utils/View";
-import { template } from "./Avatar.tmpl";
+import Block from '../../utils/Block';
+import Templator from '../../utils/templator';
+import template from './Avatar.tmpl';
+import saver from './saver.png';
 
 type AvatarProps = {
-  labelClasses: string[];
   src: string;
-  alt: string;
-}
+};
 
-export default class Avatar extends View<AvatarProps> {
-  constructor(props: AvatarProps) {
-    super(props);
+export default class Avatar extends Block<AvatarProps> {
+  constructor() {
+    super({ src: `${saver}` }, 'form__avatar');
   }
 
   render() {

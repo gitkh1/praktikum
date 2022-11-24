@@ -1,9 +1,6 @@
-import "../../Input/Input.scss";
-
-import {template as Input} from "../../Input/Input.tmpl";
-
-export const template =
-  `<div class="{{fieldClasses}}">
-    <div class="{{fieldInnerClasses}}">{{description}}</div>
-    ${Input}
+const template = `<div class="{{%field field--long%}}">
+    <div class="{{%field__description field__description--long%}}">{{description}}</div>
+    <input class="{{%field__input field__input--long%}}" type="{{type}}" name="{{name}}" disabled="{{?isDisabled}}" value="{{value}}">
   </div>`;
+
+export default template;

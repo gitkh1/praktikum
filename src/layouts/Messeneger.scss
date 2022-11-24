@@ -1,4 +1,4 @@
-@import "./Consts.scss";
+@import "./Consts";
 
 .chat {
   flex: 3;
@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-
+  visibility: hidden;
 
   &__menu {
     height: 65px;
@@ -20,16 +20,12 @@
     background-color: $background-dark;
     flex: 1;
     overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
   }
 
   &__content {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: flex-end;
     padding: 20px;
   }
 
@@ -63,12 +59,61 @@
   }
 
   &__control {
-    width: 15px;
-    height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+  }
+}
+
+.control {
+  position: relative;
+
+  &__popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding-top: 35px;
+    z-index: 1;
+  }
+
+  &:hover > &__popup {
+    display: block;
+  }
+
+  &__active {
+    width: 20px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--userscount {
+      width: auto;
+      height: auto;
+    }
+
+    &-users {
+      white-space: nowrap;
+      margin-right: 14px;
+    }
+  }
+
+  &__links {
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: $background-light;
+    border-radius: 10px;
+    padding: 5px 0;
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+
+  &__link {
+    padding: 10px 20px;
   }
 
   &__hamburger {
@@ -79,7 +124,7 @@
     position: relative;
 
     &::before {
-      content: '';
+      content: "";
       width: 4px;
       height: 4px;
       background: $grey;
@@ -89,7 +134,7 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       width: 4px;
       height: 4px;
       background: $grey;
@@ -98,23 +143,21 @@
       top: 7px;
     }
   }
-
 }
 
 .user {
-
   &__avatar {
     width: 35px;
     height: 35px;
     background: $light-grey;
     margin-right: 10px;
+    border-radius: 50%;
   }
 
   &__name {
     color: $light-grey;
   }
 }
-
 
 .friends {
   flex: 1;
@@ -129,15 +172,30 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: 20px 10px 0px;
+    padding: 20px 10px 0;
+  }
+
+  &__links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__profile {
     align-self: flex-end;
 
     &::after {
-      content: '>';
+      content: ">";
       margin-left: 5px;
+    }
+  }
+
+  &__newchat {
+    align-self: flex-start;
+
+    &::before {
+      content: "+";
+      margin-right: 5px;
     }
   }
 
@@ -149,5 +207,59 @@
     list-style-type: none;
     flex: 1;
     padding-top: 30px;
+  }
+
+  &__container {
+    overflow-y: scroll;
+    display: none;
+  }
+}
+
+.message {
+  position: relative;
+  font-weight: 300;
+  font-size: 14px;
+  margin-bottom: 4px;
+  max-width: 50%;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &--another {
+    align-self: flex-start;
+  }
+
+  &__content {
+    color: $light-grey;
+    background-color: $background-light;
+    padding: 10px 75px 9px 11px;
+    border-radius: 5px;
+  }
+
+  &__time {
+    position: absolute;
+    color: $grey;
+    right: 10px;
+    bottom: 4px;
+  }
+
+  &__name {
+    color: #5387c1;
+    margin-bottom: 4px;
+  }
+
+  &__img {
+    position: absolute;
+    right: -50px;
+    bottom: 4px;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    object-fit: cover;
+
+    &--another {
+      left: -50px;
+    }
   }
 }
