@@ -1,14 +1,13 @@
-import '../../layouts/Form.scss';
 import '../../components/Avatar/Avatar.scss';
 
 import Avatar from '../../components/Avatar/Avatar';
 import Button from '../../components/Button/Button';
 import LongField from '../../components/Fields/LongField/LongField';
 import Title from '../../components/Title/Title';
-import { formHandlers } from '../../controllers/FormsController';
-import { mapUserToProps } from '../../controllers/UserController';
 import Block from '../../utils/Block';
+import { formHandlers } from '../../utils/formHandlers';
 import isEqual from '../../utils/isEqual';
+import { mapUserToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import template from './UserChangePwd.tmpl';
 

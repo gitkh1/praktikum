@@ -1,12 +1,10 @@
-import '../../layouts/Form.scss';
-
 import Button from '../../components/Button/Button';
 import ShortField from '../../components/Fields/ShortField/ShortField';
 import Link from '../../components/Link/Link';
 import Title from '../../components/Title/Title';
-import { formHandlers } from '../../controllers/FormsController';
 import PATHS from '../../controllers/Paths';
 import Block from '../../utils/Block';
+import { formHandlers } from '../../utils/formHandlers';
 import template from './Sign.tmpl';
 
 const title = new Title({

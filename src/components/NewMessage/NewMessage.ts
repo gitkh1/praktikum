@@ -1,7 +1,7 @@
 import './NewMessage.scss';
 
-import { formHandlers } from '../../controllers/FormsController';
 import Block from '../../utils/Block';
+import { formHandlers } from '../../utils/formHandlers';
 import Templator from '../../utils/templator';
 import template from './NewMessage.tmpl';
 

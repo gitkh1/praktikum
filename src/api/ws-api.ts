@@ -1,6 +1,5 @@
-import chatController from '../controllers/ChatController';
-// import router from '../controllers/Controller';
 import getTime from '../utils/getTime';
+import Store, { STORE_PATHS } from '../utils/Store';
 
 const HOST_URL = 'wss://ya-praktikum.tech/ws/chats';
 
@@ -59,7 +58,9 @@ export default class WSAPI {
           const data = JSON.parse(event.data) as ParsedMsg;
           if (Array.isArray(data)) {
             const messages = data as ParsedMsg[];
-            messages.reverse().forEach((message) => this.sendToController(message));
+            messages
+              .reverse()
+              .forEach((message) => this.sendToController(message));
           } else if (data.type === 'message') {
             this.sendToController(data);
           } else {
@@ -119,6 +120,19 @@ export default class WSAPI {
     );
   }
 
+  // sendToController(data: ParsedMsg) {
+  //   try {
+  //     const msg: Msg = {
+  //       content: data.content || '',
+  //       time: getTime(data.time.slice(0, -6) || ''),
+  //       user_id: `${data.user_id}` || '',
+  //       id: `${this.chatId}` || '',
+  //     };
+  //     chatController.fromAPItoChat(msg);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
   sendToController(data: ParsedMsg) {
     try {
       const msg: Msg = {
@@ -127,7 +141,7 @@ export default class WSAPI {
         user_id: `${data.user_id}` || '',
         id: `${this.chatId}` || '',
       };
-      chatController.fromAPItoChat(msg);
+      Store.set(STORE_PATHS.MESSAGE_TRANSFER, msg);
     } catch (e) {
       console.log(e);
     }

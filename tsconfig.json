@@ -1,0 +1,17 @@
+{
+  "include": ["./**/*"],
+  "compilerOptions": {
+    "target": "es2016",
+    "lib": ["es2021", "dom", "esnext"],
+    "module": "commonjs",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true
+  }
+}

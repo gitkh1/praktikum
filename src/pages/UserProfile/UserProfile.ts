@@ -1,4 +1,3 @@
-import '../../layouts/Form.scss';
 import '../../components/Avatar/Avatar.scss';
 
 import Avatar from '../../components/Avatar/Avatar';
@@ -6,9 +5,9 @@ import LinkField from '../../components/Fields/LinkField/LinkField';
 import LongField from '../../components/Fields/LongField/LongField';
 import Title from '../../components/Title/Title';
 import PATHS, { LOGOUT_PATH } from '../../controllers/Paths';
-import { mapUserToProps } from '../../controllers/UserController';
 import Block from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
+import { mapUserToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import template from './UserProfile.tmpl';
 

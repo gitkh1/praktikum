@@ -1,3 +1,4 @@
+import { Msg } from '../api/ws-api';
 import { CheckedChatInfo } from '../controllers/ChatsController';
 import { ChatData } from '../types/ChatListData';
 import EventBus from './EventBus';
@@ -7,6 +8,8 @@ import set from './set';
 export enum StoreEvents {
   Updated = 'updated',
   NewMessage = 'newmessage',
+  Authorization = 'authorized',
+  UserChanged = 'userchanged'
 }
 
 export const STORE_PATHS = {
@@ -20,6 +23,13 @@ export const STORE_PATHS = {
   USER: 'user',
   POPUP: 'popup',
   AUTHORIZED: 'authorized',
+  MESSAGE_TRANSFER: 'messageTransfer',
+  FORM_EVENTS: {
+    _PATH: 'formEvents',
+    FORM_SUBMIT: 'formEvents.formSubmit',
+    FORM_FOCUSBLUR: 'formEvents.formFocusBlur',
+    SEARCH_SUBMIT: 'formEvents.searchSubmit',
+  },
 };
 
 export type StoreState = {
@@ -38,6 +48,12 @@ export type StoreState = {
   popup?: string;
   users: Record<string, string>;
   authorized: boolean;
+  messageTransfer: Msg | null;
+  formEvents: {
+    formSubmit: Event | null;
+    formFocusBlur: Event | null;
+    searchSubmit: Event | null;
+  };
 };
 
 export const EMPTY_USER = {
@@ -63,6 +79,12 @@ class Store extends EventBus {
     popup: '',
     users: {},
     authorized: false,
+    messageTransfer: null,
+    formEvents: {
+      formSubmit: null,
+      formFocusBlur: null,
+      searchSubmit: null,
+    },
   };
 
   getState() {

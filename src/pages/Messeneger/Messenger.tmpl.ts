@@ -1,4 +1,4 @@
-import { POPUP_DATA } from '../../modules/PopUpInput/PopUpInput';
+import POPUP_DATA from '../../consts/PopUpData';
 import FORM_TYPES from '../../types/FormTypes';
 
 export const CHAT_CLASS = 'chat';
@@ -31,13 +31,13 @@ const template = `<div class="{{%app%}}">
           <div class="{{%control__links%}}">
             <a class="{{%link control__link%}}" href="{{%#${
               FORM_TYPES.ADD_USER
-            }%}}">{{%${POPUP_DATA[FORM_TYPES.ADD_USER].title}%}}</a>
+            }%}}">{{%${POPUP_DATA.adduser.title}%}}</a>
             <a class="{{%link control__link%}}" href="{{%#${
               FORM_TYPES.REMOVE_USER
-            }%}}">{{%${POPUP_DATA[FORM_TYPES.REMOVE_USER].title}%}}</a>
+            }%}}">{{%${POPUP_DATA.removeuser.title}%}}</a>
             <a class="{{%link control__link%}}" href="{{%#${
               FORM_TYPES.CHAT_PHOTO
-            }%}}">{{%${POPUP_DATA[FORM_TYPES.CHAT_PHOTO].title}%}}</a>
+            }%}}">{{%${POPUP_DATA.chatphoto.title}%}}</a>
           </div>
         </div>
       </div>

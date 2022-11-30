@@ -1,8 +1,6 @@
-import {
-  CheckedChatInfo,
-  mapCheckedChatToProps,
-} from '../../controllers/ChatsController';
+import { CheckedChatInfo } from '../../controllers/ChatsController';
 import Block from '../../utils/Block';
+import { mapCheckedChatToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import Templator from '../../utils/templator';
 import template from './ChatUsers.tmpl';
