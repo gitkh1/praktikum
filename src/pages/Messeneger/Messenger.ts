@@ -71,9 +71,6 @@ class Messeneger extends Block<MessenegerProps> {
     return this.compile(template, this.props);
   }
 
-  componentDidMount() {
-    console.log('first')
-  }
 }
 
 const messenger = new Messeneger({

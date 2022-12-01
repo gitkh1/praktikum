@@ -120,19 +120,6 @@ export default class WSAPI {
     );
   }
 
-  // sendToController(data: ParsedMsg) {
-  //   try {
-  //     const msg: Msg = {
-  //       content: data.content || '',
-  //       time: getTime(data.time.slice(0, -6) || ''),
-  //       user_id: `${data.user_id}` || '',
-  //       id: `${this.chatId}` || '',
-  //     };
-  //     chatController.fromAPItoChat(msg);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
   sendToController(data: ParsedMsg) {
     try {
       const msg: Msg = {
