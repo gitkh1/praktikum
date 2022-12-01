@@ -1,21 +1,36 @@
+import { FRIEND_CLASS } from '../components/Friend/Friend';
 import {
   DATA_FORM_TYPE,
   OVERLAY_CLASS,
 } from '../modules/PopUpInput/PopUpInput';
+import auth from '../pages/Auth/Auth';
+import err from '../pages/Errors/Err';
+import messenger from '../pages/Messeneger/Messenger';
 import { CHAT_CLASS } from '../pages/Messeneger/Messenger.tmpl';
+import sign from '../pages/Sign/Sign';
+import userchangedata from '../pages/UserChangeData/UserChangeData';
+import userchangepwd from '../pages/UserChangePwd/UserChangePwd';
+import userprofile from '../pages/UserProfile/UserProfile';
 import AnyBlock from '../types/AnyBlock';
 import CallBackFn from '../types/CallBackFn';
 import FORM_TYPES from '../types/FormTypes';
-import Store from '../utils/Store';
+import Store, { StoreEvents } from '../utils/Store';
 import chatController from './ChatController';
-import { AUTH_PAGE, DEFAULT_MESSENGER_PAGE, SIGN_PAGES } from './Controller';
+import chatListController from './ChatsController';
 import formController from './FormsController';
-import PATHS, { ERR_PAGE_PATH, LOGOUT_PATH } from './Paths';
+import PATHS, {
+  AUTH_PAGE,
+  DEFAULT_MESSENGER_PAGE,
+  ERR_PAGE_PATH,
+  LOGOUT_PATH,
+  SIGN_PAGES,
+  USER_PROFILE,
+} from './Paths';
 import userAuthController from './UserController';
 
 const HREF_REGEXP = /https?:\/\/[a-z0-9-.:]*\//gim;
 
-export const FRIEND_CLASS = 'friend__wrapper';
+const ROOT_QUERY = '#root';
 
 function getLinkType(href: string): string {
   const REGEXP = /(?<=#).*/gim;
@@ -135,21 +150,21 @@ class Route {
   }
 }
 
-class Router {
+export class Router {
   static __instance: Router;
   private currentRoute: null | Route = null;
   private rootQuery = '';
   routes: Route[] = [];
   history: History = window.history;
 
-  constructor(rootQuery: string) {
+  constructor() {
     if (Router.__instance) {
       return Router.__instance;
     }
     this.routes = [];
     this.history = window.history;
     this.currentRoute = null;
-    this.rootQuery = rootQuery;
+    this.rootQuery = ROOT_QUERY;
 
     Router.__instance = this;
   }
@@ -197,10 +212,18 @@ class Router {
           this.go(href);
         }
       } else if (isClickOnOverlay(event)) {
-        this.overlayHide();
+        chatListController.overlayHide();
       } else if (isClickOnFriend(event)) {
         this._dispatchChats(event);
       }
+    });
+    Store.on(StoreEvents.Authorization, () => {
+      if (Store.getState().authorized) {
+        this.go(DEFAULT_MESSENGER_PAGE);
+      }
+    });
+    Store.on(StoreEvents.UserChanged, () => {
+      this.go(USER_PROFILE);
     });
     try {
       await userAuthController.getUser();
@@ -222,7 +245,7 @@ class Router {
         this.showChat();
       } else if (getActiveChatId() === clickedId) {
         await chatController.closeWS();
-        await chatController.clearChat();
+        chatController.clearChat();
         this.hideChat();
       } else {
         await chatController.closeWS();
@@ -290,20 +313,6 @@ class Router {
     return route;
   }
 
-  overlayShow() {
-    const overlay = document.querySelector(`.${OVERLAY_CLASS}`) as HTMLElement;
-    if (overlay) {
-      overlay.style.display = 'block';
-    }
-  }
-
-  overlayHide() {
-    const overlay = document.querySelector(`.${OVERLAY_CLASS}`) as HTMLElement;
-    if (overlay) {
-      overlay.style.display = 'none';
-    }
-  }
-
   hideChat() {
     const overlay = document.querySelector(`.${CHAT_CLASS}`) as HTMLElement;
     if (overlay) {
@@ -322,9 +331,38 @@ class Router {
     const linkType = getLinkType(href);
     if (Object.values(FORM_TYPES).includes(linkType)) {
       formController.setPopUpProps(linkType);
-      this.overlayShow();
+      chatListController.overlayShow();
     }
   }
 }
 
-export default Router;
+const router = new Router();
+const UPDATE_INTERVAL = 1000;
+let updateIntrval: ReturnType<typeof setInterval> | null = null;
+
+function messengerOnRender() {
+  userAuthController.getUser();
+  chatController.clearChat();
+  updateIntrval = setInterval(
+    () => chatListController.getChats(),
+    UPDATE_INTERVAL
+  );
+}
+
+function messengerOnUnRender() {
+  if (!updateIntrval) {
+    return;
+  }
+  clearInterval(updateIntrval);
+}
+
+router
+  .use(auth, PATHS.auth)
+  .use(messenger, PATHS.messenger, messengerOnRender, messengerOnUnRender)
+  .use(sign, PATHS.sign)
+  .use(userprofile, PATHS.userprofile, userAuthController.getUser)
+  .use(userchangepwd, PATHS.userchangepwd, userAuthController.getUser)
+  .use(userchangedata, PATHS.userchangedata, userAuthController.getUser)
+  .use(err, PATHS.err);
+
+export default router;

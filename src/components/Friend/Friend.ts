@@ -1,13 +1,13 @@
 import '../Avatar/Avatar.scss';
 import './Friend.scss';
 
-import { FRIEND_CLASS } from '../../controllers/Router';
+import saver from '../../images/saver.png';
 import FriendProps from '../../types/FriendProps';
 import Block from '../../utils/Block';
 import Templator from '../../utils/templator';
-import saver from '../Avatar/saver.png';
 import template from './Friend.tmpl';
 
+export const FRIEND_CLASS = 'friend__wrapper';
 export default class Friend extends Block<FriendProps> {
   private dataId: string;
   private chatName: string;
@@ -38,12 +38,12 @@ export default class Friend extends Block<FriendProps> {
 
   check() {
     this.isChecked = true;
-    this.dispatchComponentDidMount()
+    this.dispatchComponentDidMount();
   }
 
   uncheck() {
     this.isChecked = false;
-    this.dispatchComponentDidMount()
+    this.dispatchComponentDidMount();
   }
 
   getChatName() {

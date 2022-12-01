@@ -54,3 +54,5 @@ export class ChatDataAPI extends BaseAPI {
     return this.processResponse(response as ServerResponse);
   }
 }
+
+export const chatDataAPI = new ChatDataAPI();

@@ -1,16 +1,26 @@
+import { chatDataAPI } from '../api/chats-api';
 import userAPI from '../api/users-api';
 import WSAPI, { Msg } from '../api/ws-api';
 import myMessageList from '../modules/MessagesList/MessageList';
 import PlainObject from '../types/PlainObject';
 import UserProfileData from '../types/UserProfileData';
-import Store from '../utils/Store';
-import { chatDataAPI } from './ChatsController';
-
+import Store, { StoreEvents } from '../utils/Store';
 class ChatController {
   private token = '';
   private chatId = '';
   private userId = '';
   private connection: WSAPI | null = null;
+
+  constructor() {
+    Store.on(StoreEvents.Updated, () => {
+      const store = Store.getState();
+      if (store.messageTransfer) {
+        const msg = store.messageTransfer;
+        this.fromAPItoChat(msg);
+        store.messageTransfer = null;
+      }
+    });
+  }
 
   clearChat() {
     Store.merge({
@@ -93,9 +103,9 @@ class ChatController {
       if (!this.connection) {
         return;
       }
-      this.connection.send(message as string);  
+      this.connection.send(message as string);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -110,9 +120,9 @@ class ChatController {
         const data = body as UserProfileData;
         users[`${msg.user_id}`] = `${data.first_name} ${data.second_name}`;
       }
-      myMessageList.addMessage(msg);  
+      myMessageList.addMessage(msg);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }

@@ -3,17 +3,17 @@ import Search from '../../components/Input/Search/Search';
 import Link from '../../components/Link/Link';
 import NewMessage from '../../components/NewMessage/NewMessage';
 import PATHS from '../../controllers/Paths';
-import { mapMessenegerToProps } from '../../controllers/UserController';
 import myFriendsList, {
   FriendsList,
 } from '../../modules/FriendsList/FriendsList';
 import myMessageList, {
   MessageList,
 } from '../../modules/MessagesList/MessageList';
-import PopUpInput, { POPUP_DATA } from '../../modules/PopUpInput/PopUpInput';
+import PopUpInput, { popup } from '../../modules/PopUpInput/PopUpInput';
 import FORM_TYPES from '../../types/FormTypes';
 import Block from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
+import { mapMessenegerToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import template from './Messenger.tmpl';
 
@@ -50,8 +50,6 @@ const search = new Search();
 
 const newmessage = new NewMessage();
 
-export const popup = new PopUpInput(POPUP_DATA[FORM_TYPES.CREATE_CHAT]);
-
 class Messeneger extends Block<MessenegerProps> {
   constructor(props: MessenegerProps) {
     let state = mapMessenegerToProps(Store.getState());
@@ -72,6 +70,7 @@ class Messeneger extends Block<MessenegerProps> {
   render() {
     return this.compile(template, this.props);
   }
+
 }
 
 const messenger = new Messeneger({

@@ -1,7 +1,7 @@
 import Friend from '../../components/Friend/Friend';
-import { mapChatListToProps } from '../../controllers/ChatsController';
 import Block from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
+import { mapChatListToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import template from './FriendsList.tmpl';
 

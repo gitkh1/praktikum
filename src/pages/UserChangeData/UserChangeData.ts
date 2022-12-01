@@ -1,14 +1,13 @@
-import '../../layouts/Form.scss';
 import '../../components/Avatar/Avatar.scss';
 
 import Button from '../../components/Button/Button';
 import LongField from '../../components/Fields/LongField/LongField';
 import LabledInput from '../../components/Input/LabledInput/LabledInput';
 import Title from '../../components/Title/Title';
-import { formHandlers } from '../../controllers/FormsController';
-import { mapUserToProps } from '../../controllers/UserController';
 import Block from '../../utils/Block';
+import { formHandlers } from '../../utils/formHandlers';
 import isEqual from '../../utils/isEqual';
+import { mapUserToProps } from '../../utils/mapPropsFunctions';
 import Store, { StoreEvents } from '../../utils/Store';
 import template from './UserChangeData.tmpl';
 
@@ -136,32 +135,3 @@ function changePhotoHandler(e: Event) {
     img.src = fileReader.result as string;
   });
 }
-
-// function showPhotoForm() {
-//   const photoForm = document
-//     .getElementById('loadphoto')
-//     .content.cloneNode(true).firstElementChild;
-//   photoForm.querySelector('.newphoto__name').textContent = user.name;
-//   app.appendChild(photoForm);
-
-//   const photoPreview = photoForm.querySelector('.newphoto__preview');
-//   const photoInput = photoForm.querySelector('#photoInput');
-//   const fileReader = new FileReader();
-
-//   photoInput.addEventListener('change', (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       if (file.size > 1024 * 1024) {
-//         console.log('Файл слишком большой!');
-//       } else {
-//         fileReader.readAsDataURL(file);
-//       }
-//     }
-//   });
-
-//   fileReader.addEventListener('load', () => {
-//     photoPreview.src = fileReader.result;
-//     user.photo = fileReader.result;
-//     sendNewPhoto(fileReader.result);
-//   });
-// }

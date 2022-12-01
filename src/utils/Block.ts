@@ -95,14 +95,14 @@ export default abstract class Block<Props extends object> {
 
   private componentDidMountPrivate() {
     this.componentDidMount();
+    this.renderPrivate();
     Object.values(this.children).forEach((child) => {
       child.dispatchComponentDidMount();
     });
   }
 
   componentDidMount() {
-    this.renderPrivate();
-    return true;
+    return;
   }
 
   dispatchComponentDidMount() {

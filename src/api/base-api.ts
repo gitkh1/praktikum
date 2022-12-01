@@ -1,9 +1,5 @@
-import router from '../controllers/Controller';
-import PATHS from '../controllers/Paths';
 import ServerResponse from '../types/ServerResponse';
 import { HOST_RESOURCES } from '../utils/HTTPTransport';
-
-const UNAUTHORIZED_STATUS = 401;
 
 type processResponseType = [
   boolean,
@@ -34,9 +30,6 @@ export default abstract class BaseAPI {
       }
       if (response.response === 'OK') {
         return [true, { reason: 'OK' }];
-      }
-      if (response.status === UNAUTHORIZED_STATUS) {
-        router.go(PATHS.auth);
       }
       const answer = JSON.parse(
         response.response

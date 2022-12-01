@@ -1,7 +1,7 @@
 import '../Input.scss';
 
-import { searchHandler } from '../../../controllers/FormsController';
 import Block from '../../../utils/Block';
+import { searchHandler } from '../../../utils/formHandlers';
 import Templator from '../../../utils/templator';
 import template from './Search.tmpl';
 

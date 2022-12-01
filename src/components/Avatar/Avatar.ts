@@ -1,9 +1,9 @@
 import './Avatar.scss';
 
+import saver from '../../images/saver.png';
 import Block from '../../utils/Block';
 import Templator from '../../utils/templator';
 import template from './Avatar.tmpl';
-import saver from './saver.png';
 
 type AvatarProps = {
   src: string;

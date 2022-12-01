@@ -1,13 +1,12 @@
 import myFriendsList from '../modules/FriendsList/FriendsList';
 import ChangePasswordData from '../types/ChangePasswordData';
 import { NewChatData } from '../types/ChatListData';
-import EventHandler from '../types/Events';
 import FORM_TYPES from '../types/FormTypes';
 import PlainObject from '../types/PlainObject';
 import SignInData from '../types/SignInData';
 import SignUpData from '../types/SignUpData';
 import UserProfileData from '../types/UserProfileData';
-import Store, { STORE_PATHS } from '../utils/Store';
+import Store, { STORE_PATHS,StoreEvents } from '../utils/Store';
 import validateForm, {
   validatePasswordForm,
   validateSignUpPasswordForm,
@@ -54,18 +53,29 @@ function collectFile(form: HTMLFormElement): FormData | undefined {
 }
 
 class FormsController {
+  constructor() {
+    Store.on(StoreEvents.Updated, async () => {
+      const store = Store.getState();
+      if (store.formEvents.formFocusBlur) {
+        this.focusBlurForm(store.formEvents.formFocusBlur);
+        store.formEvents.formFocusBlur = null;
+      } else if (store.formEvents.formSubmit) {
+        await this.submitForm(store.formEvents.formSubmit);
+        store.formEvents.formSubmit = null;
+      } else if (store.formEvents.searchSubmit) {
+        this.searchForm(store.formEvents.searchSubmit);
+        store.formEvents.searchSubmit = null;
+      }
+    });
+  }
+
   setPopUpProps(linkType: string) {
     if (Object.values(FORM_TYPES).includes(linkType)) {
       Store.set(STORE_PATHS.POPUP, linkType);
     }
   }
 
-  focusForm(event: Event): void {
-    const form = getFormByEvent(event);
-    validateForm(form);
-  }
-
-  blurForm(event: Event): void {
+  focusBlurForm(event: Event): void {
     const form = getFormByEvent(event);
     validateForm(form);
   }
@@ -134,15 +144,5 @@ class FormsController {
 }
 
 const formController = new FormsController();
-
-export const formHandlers: EventHandler = {
-  submit: [formController.submitForm, false],
-  focus: [formController.focusForm, true],
-  blur: [formController.blurForm, true],
-};
-
-export const searchHandler: EventHandler = {
-  input: [formController.searchForm, false],
-};
 
 export default formController;
